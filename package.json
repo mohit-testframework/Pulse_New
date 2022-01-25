@@ -4,9 +4,84 @@
   "description": "An Ionic project",
   "devDependencies": {
     "@ionic/v1-toolkit": "^1.0.0",
+    "com.telerik.plugins.nativepagetransitions": "^0.7.0",
+    "cordova-android": "^10.1.1",
+    "cordova-bluetooth-classic": "git+https://github.com/blakeparkinson/cordova-bluetooth-classic.git",
+    "cordova-ios": "^6.2.0",
+    "cordova-open-native-settings": "^1.5.3",
+    "cordova-plugin-advanced-http": "^3.1.0",
+    "cordova-plugin-android-permissions": "^1.1.2",
+    "cordova-plugin-app-version": "^0.1.12",
+    "cordova-plugin-ble-central": "git+https://github.com/LDLCLid3/cordova-plugin-ble-central.git",
+    "cordova-plugin-device": "^2.0.2",
+    "cordova-plugin-dialogs": "^2.0.2",
+    "cordova-plugin-disable-bitcode": "^1.3.2",
+    "cordova-plugin-file": "^6.0.2",
+    "cordova-plugin-file-transfer": "git+https://github.com/apache/cordova-plugin-file-transfer.git",
+    "cordova-plugin-geolocation": "^4.1.0",
+    "cordova-plugin-inappbrowser": "^5.0.0",
+    "cordova-plugin-insomnia": "^4.3.0",
+    "cordova-plugin-ionic-keyboard": "^2.2.0",
+    "cordova-plugin-ionic-webview": "^4.2.1",
+    "cordova-plugin-market": "^1.2.0",
+    "cordova-plugin-nativestorage": "^2.3.2",
+    "cordova-plugin-request-location-accuracy": "^2.3.0",
+    "cordova-plugin-splashscreen": "^5.0.2",
+    "cordova-plugin-statusbar": "^2.4.2",
+    "cordova-plugin-vibration": "^2.1.6",
+    "cordova-plugin-webserver": "^1.0.3",
     "gulp": "^3.5.6",
     "gulp-clean-css": "^3.7.0",
     "gulp-rename": "^1.2.0",
-    "gulp-sass": "^3.1.0"
+    "gulp-sass": "^3.1.0",
+    "pulse-bluetooth-policy": "git+https://github.com/blakeparkinson/pulse-bluetooth-policy.git",
+    "pulse-external-accessory": "git+https://github.com/blakeparkinson/pulse-external-accessory.git"
+  },
+  "dependencies": {
+    "cordova-plugin-androidx-adapter": "1.1.3"
+  },
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-statusbar": {},
+      "cordova-plugin-device": {},
+      "cordova-plugin-splashscreen": {},
+      "cordova-plugin-ionic-webview": {
+        "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
+      },
+      "cordova-plugin-ionic-keyboard": {},
+      "com.telerik.plugins.nativepagetransitions": {},
+      "cordova-open-native-settings": {},
+      "cordova-plugin-advanced-http": {},
+      "cordova-plugin-android-permissions": {},
+      "cordova-plugin-app-version": {},
+      "cordova-plugin-dialogs": {},
+      "cordova-plugin-disable-bitcode": {},
+      "cordova-plugin-geolocation": {
+        "GPS_REQUIRED": "true"
+      },
+      "cordova-plugin-inappbrowser": {},
+      "cordova-plugin-insomnia": {},
+      "cordova-plugin-market": {},
+      "cordova-plugin-nativestorage": {},
+      "cordova-plugin-request-location-accuracy": {
+        "PLAY_SERVICES_LOCATION_VERSION": "16.+"
+      },
+      "cordova-plugin-vibration": {},
+      "cordova-plugin-webserver": {},
+      "cordova-bluetooth-classic": {},
+      "pulse-bluetooth-policy": {},
+      "pulse-external-accessory": {},
+      "cordova-plugin-androidx-adapter": {},
+      "cordova-plugin-file-transfer": {},
+      "cordova-plugin-ble-central": {
+        "ACCESS_BACKGROUND_LOCATION": "false",
+        "IOS_INIT_ON_LOAD": "true",
+        "BLUETOOTH_USAGE_DESCRIPTION": " "
+      }
+    },
+    "platforms": [
+      "ios",
+      "android"
+    ]
   }
 }

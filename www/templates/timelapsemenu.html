@@ -1,0 +1,86 @@
+<ion-view view-title="Advanced Time Lapse Menu" class="timelapse-menu">
+  <ion-content class="has-header" overflow-scroll="true" has-bouncing="true">
+    <div class="menu-list gotham-light">
+      <ion-list>
+          <ion-item>
+            <a class="row item-row" ui-sref="app.exposure({deviceId:'{{ctrl.dId}}'})">
+              <div class="col left-section">
+                <div>
+                  Exposure Ramp
+                </div>
+              </div>
+              <div class="col gotham-medium">
+                <div class="ion-ios-arrow-right right"></div>
+                <div class="blue gotham-medium right time" ng-if="ctrl.timelapseModel.timelapses[ctrl.dId].settings.activeExposure">On</div>
+              </div>
+            </a>
+          </ion-item>
+          <ion-item>
+            <a class="row item-row" ui-sref="app.bulbRamping({deviceId:'{{ctrl.dId}}'})">
+              <div class="col left-section">
+                <div>
+                  Bulb Ramp
+                </div>
+              </div>
+              <div class="col gotham-medium">
+                <div class="ion-ios-arrow-right right"></div>
+                <div class="blue gotham-medium right time" ng-if="ctrl.timelapseModel.timelapses[ctrl.dId].settings.activeBulbExposure">On</div>
+              </div>
+            </a>
+          </ion-item>
+          <ion-item>
+            <a class="row item-row" ui-sref="app.isoRamping({deviceId:'{{ctrl.dId}}'})">
+              <div class="col left-section">
+                <div>
+                  ISO Ramp
+                </div>
+              </div>
+              <div class="col gotham-medium">
+                <div class="ion-ios-arrow-right right"></div>
+                <div class="blue gotham-medium right time" ng-if="ctrl.timelapseModel.timelapses[ctrl.dId].settings.activeISOExposure">On</div>
+              </div>
+            </a>
+          </ion-item>
+          <ion-item>
+            <a class="row item-row" ui-sref="app.speedRamping({deviceId:'{{ctrl.dId}}'})">
+              <div class="col left-section">
+                <div>
+                  Speed Ramp
+                </div>
+              </div>
+              <div class="col gotham-medium">
+                <div class="ion-ios-arrow-right right"></div>
+                <div class="blue gotham-medium right time" ng-if="ctrl.timelapseModel.timelapses[ctrl.dId].settings.activeSpeedExposure">On</div>
+              </div>
+            </a>
+          </ion-item>
+          <ion-item>
+            <a class="row item-row" ui-sref="app.savePreset">
+              <div class="col left-section">
+                <div>
+                  Save as Preset
+                </div>
+              </div>
+              <div class="col gotham-medium">
+
+                <div class="ion-ios-arrow-right right"></div>
+              </div>
+            </a>
+          </ion-item>
+          <ion-item>
+            <a class="row item-row" ui-sref="app.loadPreset">
+              <div class="col left-section">
+                <div>
+                  Load a Preset
+                </div>
+              </div>
+              <div class="col gotham-medium">
+
+                <div class="ion-ios-arrow-right right"></div>
+              </div>
+            </a>
+          </ion-item>
+        </ion-list>
+      </div>
+    </ion-content>
+  </ion-view>
