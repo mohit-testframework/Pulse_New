@@ -16,13 +16,13 @@
        * @return {null}
        */
       updateSetting: function updateSetting(device, key, newIndex) {
-        console.log('inside updateSetting : ');
+        // console.log('inside updateSetting : ');
         var updateActiveIndex = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
 
         var newVal;
         var byteArray;
         if (key == 'shutter') {
-          console.log('inside updateSetting shutter');
+          // console.log('inside updateSetting shutter');
           newVal = device.metaData.camSettings.shutterOptions[newIndex];
           console.log('inside updateSetting shutter newVal : '+ JSON.stringify(newVal));
           if (updateActiveIndex) {
@@ -33,7 +33,7 @@
             $transmit.setShutter(device, byteArray);
           }
         } else if (key == 'aperture') {
-          console.log('inside updateSetting aperture');
+          // console.log('inside updateSetting aperture');
           newVal = device.metaData.camSettings.apertureOptions[newIndex];
           console.log('inside updateSetting aperture newVal : '+ JSON.stringify(newVal));
           if (updateActiveIndex) {
@@ -45,7 +45,7 @@
           }
         } else {
           //iso
-          console.log('inside updateSetting ISO');
+          // console.log('inside updateSetting ISO');
           newVal = device.metaData.camSettings.isoOptions[newIndex];
            console.log('inside updateSetting ISO newVal : '+ JSON.stringify(newVal));
           if (updateActiveIndex) {

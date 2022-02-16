@@ -9,6 +9,7 @@
     "cordova-bluetooth-classic": "git+https://github.com/blakeparkinson/cordova-bluetooth-classic.git",
     "cordova-ios": "^6.2.0",
     "cordova-open-native-settings": "^1.5.3",
+    "cordova-plugin-add-swift-support": "^2.0.2",
     "cordova-plugin-advanced-http": "^3.1.0",
     "cordova-plugin-android-permissions": "^1.1.2",
     "cordova-plugin-app-version": "^0.1.12",
@@ -29,7 +30,7 @@
     "cordova-plugin-splashscreen": "^5.0.2",
     "cordova-plugin-statusbar": "^2.4.2",
     "cordova-plugin-vibration": "^2.1.6",
-    "cordova-plugin-webserver": "^1.0.3",
+    "cordova-plugin-webserver": "git+https://github.com/bykof/cordova-plugin-webserver.git",
     "gulp": "^3.5.6",
     "gulp-clean-css": "^3.7.0",
     "gulp-rename": "^1.2.0",
@@ -51,7 +52,9 @@
       "cordova-plugin-ionic-keyboard": {},
       "com.telerik.plugins.nativepagetransitions": {},
       "cordova-open-native-settings": {},
-      "cordova-plugin-advanced-http": {},
+      "cordova-plugin-advanced-http": {
+        "ANDROIDBLACKLISTSECURESOCKETPROTOCOLS": "SSLv3,TLSv1"
+      },
       "cordova-plugin-android-permissions": {},
       "cordova-plugin-app-version": {},
       "cordova-plugin-dialogs": {},
@@ -67,7 +70,6 @@
         "PLAY_SERVICES_LOCATION_VERSION": "16.+"
       },
       "cordova-plugin-vibration": {},
-      "cordova-plugin-webserver": {},
       "cordova-bluetooth-classic": {},
       "pulse-bluetooth-policy": {},
       "pulse-external-accessory": {},
@@ -77,11 +79,12 @@
         "ACCESS_BACKGROUND_LOCATION": "false",
         "IOS_INIT_ON_LOAD": "true",
         "BLUETOOTH_USAGE_DESCRIPTION": " "
-      }
+      },
+      "cordova-plugin-webserver": {}
     },
     "platforms": [
-      "ios",
-      "android"
+      "android",
+      "ios"
     ]
   }
 }

@@ -129,7 +129,7 @@
       },
 
       capture: function capture(device) {
-        console.log("Inside Transmit capture  *******");
+        // console.log("Inside Transmit capture  *******");
         var fastPhoto =
           arguments.length > 1 && arguments[1] !== undefined
             ? arguments[1]
@@ -165,7 +165,7 @@
             $config.characteristics.GATT_CHAR_UUID_UART_TX,
             buff.buffer,
             function(response) {
-              console.log("Photo capture write response ******* : " + response);
+              // console.log("Photo capture write response ******* : " + response);
               deferred.resolve(response);
             },
             function(error) {

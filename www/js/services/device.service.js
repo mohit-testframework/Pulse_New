@@ -3117,7 +3117,7 @@ permission.requestPermission(permission.ACCESS_COARSE_LOCATION, function( status
         if (device.metaData.cameraType == $config.cameraSettings.make.CANON) {
           camMode = $config.cameraMode.CANON[modeValue];
           console.log(
-            "Canon Mode updated to " +
+            // "Canon Mode updated to " +
               $config.cameraMode.CANON[modeValue] +
               " : " +
               modeValue
@@ -3170,7 +3170,7 @@ permission.requestPermission(permission.ACCESS_COARSE_LOCATION, function( status
       },
 
       changeShutter: function changeShutter(buffer, device) {
-        console.log("changing shutter value");
+        // console.log("changing shutter value");
         var shutterValue;
         var data = new Uint8Array(buffer);
         var value =
@@ -3245,7 +3245,7 @@ permission.requestPermission(permission.ACCESS_COARSE_LOCATION, function( status
       },
 
       changeIso: function changeIso(buffer, device) {
-        console.log("changing Iso value");
+        // console.log("changing Iso value");
         var data = new Uint8Array(buffer);
         var isoValue;
         var value =

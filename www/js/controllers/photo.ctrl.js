@@ -42,21 +42,21 @@
     var currentSelectedDevice, previousSelectedDevice;
 
 
-$ionicPlatform.ready(function () {
-    $device.getDevicesFromStorage().then(function (result) {
-      localStorageDevices = sortByConnectedDevices(result);
-      vm.localStorageDevices = _.filter(localStorageDevices);
-      // console.log('vm.localStorageDevices  : ' + JSON.stringify(vm.localStorageDevices));
+    $ionicPlatform.ready(function () {
+        $device.getDevicesFromStorage().then(function (result) {
+          localStorageDevices = sortByConnectedDevices(result);
+          vm.localStorageDevices = _.filter(localStorageDevices);
+          // console.log('vm.localStorageDevices  : ' + JSON.stringify(vm.localStorageDevices));
 
-      // for (var i = 0; i < (vm.localStorageDevices).length; i++) {
-      //   console.log('vm.localStorageDevices[i].id : ' + vm.localStorageDevices[i].id);
-      //   // if(vm.localStorageDevices[i].isMainDevice){
-      //   //   vm.isMainDevice = true;
-      //   // }
-      // }
-      
+          // for (var i = 0; i < (vm.localStorageDevices).length; i++) {
+          //   console.log('vm.localStorageDevices[i].id : ' + vm.localStorageDevices[i].id);
+          //   // if(vm.localStorageDevices[i].isMainDevice){
+          //   //   vm.isMainDevice = true;
+          //   // }
+          // }
+          
+        });
     });
-});
 
 
     init();
@@ -391,7 +391,8 @@ $ionicPlatform.ready(function () {
           console.log('vm.fill : ' + vm.fill);
           // we dont allow another photo to be taken until the shutter is closed. Also wait 300 ms before allowing press again
 
-          vm.thumb = "img/pulse-scene.jpg";
+          // vm.thumb = "img/pulse-scene.jpg";
+          vm.thumb = "../../img/pulse-scene.jpg";
           vm.showSpinner = false;
           vm.backgroundGradient = 0.0;
 
@@ -440,7 +441,8 @@ $ionicPlatform.ready(function () {
   
                 if (response && response.thumbCancel) {
                   //thumbnail failed for some reason
-                  vm.thumb = "img/pulse-scene.jpg";
+                  // vm.thumb = "img/pulse-scene.jpg";
+                  vm.thumb = "../../img/pulse-scene.jpg";
                   vm.showSpinner = false;
                   vm.backgroundGradient = 0.0;
                   vm.fill = "#fff";
@@ -458,7 +460,8 @@ $ionicPlatform.ready(function () {
                 $timeout.cancel(animationTimer);
                 //user is in video mode
                 hasErrored = true;
-                vm.thumb = "img/pulse-scene.jpg";
+                // vm.thumb = "img/pulse-scene.jpg";
+                vm.thumb = "../../img/pulse-scene.jpg";
                 vm.showSpinner = false;
                 vm.backgroundGradient = 0.0;
                 vm.fill = "#fff";
@@ -524,7 +527,7 @@ $ionicPlatform.ready(function () {
             // photoMode = $config.communication.ACTION_PHOTO_FAST;
             photoMode = $config.communication.ACTION_PHOTO_CAPTURE;
             // console.log("capture: fast photo  *******");
-            console.log("capture: ack photo *******");
+            // console.log("capture: ack photo *******");
           } else {
             // photoMode = $config.communication.ACTION_PHOTO_CAPTURE;
             photoMode = $config.communication.ACTION_PHOTO_FAST;
@@ -545,7 +548,7 @@ $ionicPlatform.ready(function () {
             $config.characteristics.GATT_CHAR_UUID_UART_TX,
             buff.buffer,
             function(response) {
-              console.log("Photo capture write response ******* : " + response);
+              // console.log("Photo capture write response ******* : " + response);
               deferred.resolve(response);
             },
             function(error) {

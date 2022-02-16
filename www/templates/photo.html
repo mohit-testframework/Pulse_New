@@ -5,12 +5,14 @@
       <div class="row row-center center">
         <div class="col center image-preview">
 
-          <div class="img-container" ng-click="ctrl.toggleHistogram()" ng-if="thumbCapable">
+          <div class="img-container" ng-click="ctrl.toggleHistogram()" ng-if="thumbCapable" style="height: 237.5px;">
             <div
-              ng-if="!ctrl.isBtClassicConnected() || !ctrl.histogram"
+              ng-if="(!ctrl.isBtClassicConnected() || !ctrl.histogram) && ctrl.selectedDevice.btClassic.enabled"
               class="thumb white-box"
               ng-class="(ctrl.btClassic.settings.enabled) ? '': 'defaultThumb'"
               style="background-image: linear-gradient(rgba(0, 0, 0, {{ctrl.backgroundGradient}}), rgba(0, 0, 0, {{ctrl.backgroundGradient}})), url({{ctrl.thumb}});">
+              
+              <!-- style=`background-image: linear-gradient(rgba(0, 0, 0, ${ctrl.backgroundGradient}), rgba(0, 0, 0, ${ctrl.backgroundGradient}) ), url(${ctrl.thumb});`> -->
               <ion-spinner icon="circles" ng-show="ctrl.showSpinner && ctrl.selectedDevice.btClassic.enabled" class="circlesreg"></ion-spinner>
             </div>
             <div class="hist-chart white-box" ng-if="ctrl.histogram">
@@ -46,8 +48,7 @@
         Thumbnail
       </ion-toggle>
     </div>
-
-    <!-- <div class="row row-center center text-center delay margin-class-enable-delay-photopage" ng-if="ctrl.isMoreThanOneDeviceConnected()"> -->
+        <!-- <div class="row row-center center text-center delay margin-class-enable-delay-photopage" ng-if="ctrl.isMoreThanOneDeviceConnected()"> -->
     <div class="toggle-contain text-center all-camera-toggle" ng-if="ctrl.isMoreThanOneDeviceConnected()">
       <ion-toggle ng-model="ctrl.isAllCamera" ng-checked="ctrl.isAllCamera" class="grey" >
         All Cameras
