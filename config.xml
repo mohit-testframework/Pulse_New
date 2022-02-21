@@ -14,8 +14,6 @@
     <allow-navigation href="https://*github.com/*" />
     <preference name="orientation" value="portrait" />
     <preference name="ScrollEnabled" value="false" />
-    <preference name="android-minSdkVersion" value="22" />
-    <preference name="android-targetSdkVersion" value="31" />
     <preference name="BackupWebStorage" value="none" />
     <preference name="SplashMaintainAspectRatio" value="true" />
     <preference name="FadeSplashScreenDuration" value="1000" />
