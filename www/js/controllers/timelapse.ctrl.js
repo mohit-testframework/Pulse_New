@@ -100,9 +100,9 @@
 
       // console.log('Time : ' + JSON.stringify(time));
       // console.log('Time hours : ' + time.hours);
-      if(time.hours == 0 || time.hours == "0"){
+      if (time.hours == 0 || time.hours == "0") {
         $timelapse.timelapses[dId].settings.interval  = (parseInt(time.minutes) * 1.5);  
-      }else {
+      } else {
         let hour = parseInt(time.hours) * 60;
         let minute = parseInt(time.minutes);
         let Total = hour + minute;
@@ -112,8 +112,6 @@
         $timelapse.timelapses[dId].settings.interval  = (Total * 1.5);  
       }
       
-
-
       $scope.tlSettings.interval = parseInt($timelapse.timelapses[dId].settings.interval);
        document.getElementById("incrementerValueTimelapse").innerHTML = parseInt($scope.tlSettings.interval);
        // console.log('$scope.tlSettings.interval : ' + $scope.tlSettings.interval);
@@ -129,7 +127,7 @@
     //   console.log('value : ' + value);
     // }
 
-  vm.changeExposureTime = function(time){
+  vm.changeExposureTime = function(time) {
 
       // console.log('changeExposureTimeNew : ' + JSON.stringify(time));
       // let correctTime = time / 1.5;
@@ -266,7 +264,7 @@
          //    }
 
             tccurrenttime = tccurrenttime + 1;
-     if(tccurrenttime <= totalExposureSeconds){
+     if (tccurrenttime <= totalExposureSeconds) {
 
         if (vm.currentCount <= totalExposureCount) {
              
@@ -424,7 +422,7 @@
     $rootScope.$on("startTimelapseUi", function(event, device) {
       if (device.id == $stateParams.deviceId) {
         waitingForResponse = false;
-        console.log("got response from pulse. initializing timelapse");
+        console.log("got response from pulse. initializing timelapse current index " + device.metaData.camSettings.activeShutterIndex);
         initializeTimelapse();
       }
     });
@@ -728,12 +726,11 @@
         if (settings.shutter.value == "BULB") {
              vm.bulbMode = true;
              vm.titleValue = "Long Exposure Time Lapse";
-          }else { 
+          } else { 
             vm.bulbMode = false;
             vm.titleValue = "Time Lapse";
           }
         }
-
 
       vm.control = {};
       vm.btClassic = btClassic;
@@ -747,6 +744,7 @@
       vm.minMinute = 0;
       vm.hasSwiped = false;
       vm.presetModel = $preset;
+      console.log('Preset name = ' + vm.presetModel.settings.presetName);
       vm.pauseOrResumeText = "Pause";
       vm.deviceModel = $device.getSelectedDevice();
       vm.model = $timelapse;
@@ -756,6 +754,30 @@
       vm.timelapseModel = $timelapse;
       $scope.tlSettings = $timelapse.timelapses[dId].settings;
 
+      if ($timelapse.timelapses[dId].settings.hdr.hdrData) {
+        console.log('Number of HDR photos = ' + $timelapse.timelapses[dId].settings.hdr.hdrData.numPhotos);
+        if (vm.presetModel.settings.presetName == 'HDR Time Lapse') {
+          switch ($timelapse.timelapses[dId].settings.hdr.hdrData.numPhotos) {
+            case 3:
+              $timelapse.timelapses[dId].settings.interval = 15;
+              // console.log('Setting base HDR interval to 15');
+            break;
+            case 5:
+              $timelapse.timelapses[dId].settings.interval = 22;
+              // console.log('Setting base HDR interval to 22');
+            break;
+            case 7:
+              $timelapse.timelapses[dId].settings.interval = 29;
+              // console.log('Setting base HDR interval to 29');
+            break;
+            case 9:
+              $timelapse.timelapses[dId].settings.interval = 36;
+              // console.log('Setting base HDR interval to 36');
+            break;
+          }
+        }
+      }
+
       //hacky stuff to make sure the timelapse slider goes to the actual right slide since there are now multiple slide instances
       if (!$timelapse.timelapses[dId].settings.slideIndex) {
         $timelapse.timelapses[dId].settings.slideIndex = $timelapse.slideIndex;
@@ -764,9 +786,7 @@
 
       setBackgroundMode();
 
-
       vm.model1 = $bulb;
-
 
       $scope.duration = $bulb.duration;
       // console.log('$scope.duration : ' + JSON.stringify($scope.duration));
@@ -784,7 +804,7 @@
                 }
                 
                 $scope.tlSettings.interval =  parseInt($timelapse.timelapses[dId].settings.interval);
-          }else {
+          } else {
             $scope.tlSettings = $timelapse.timelapses[dId].settings;
           }
     

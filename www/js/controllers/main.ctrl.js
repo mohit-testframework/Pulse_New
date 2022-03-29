@@ -9,11 +9,11 @@
     var spanIndex = -1;
     var sawFirmwareModal = false;
 
-    var hideRightIconStates = ['/app/settings', '/app/about', '/app/timelapsedelay', '/app/exposure', '/app/bulbRamping', '/app/isoRamping', '/app/speedRamping', '/app/timelapsemenu', '/app/bugreport', '/app/devices', '/app/appsettings', '/app/updateFirmware', '/app/savePreset', '/app/loadPreset'];
+    var hideRightIconStates = ['/app/settings', '/app/about', '/app/timelapsedelay', '/app/exposure', '/app/bulbRamping', '/app/isoRamping', '/app/speedRamping', '/app/timelapsemenu', '/app/bugreport', '/app/devices', '/app/appsettings', '/app/updateFirmware', '/app/savePreset', '/app/loadPreset', '/app/hdrTl'];
 
-    var backArrowIconStates = ['/app/settings', '/app/about', '/app/bugreport', '/app/timelapsemenu', '/app/exposure',  '/app/bulbRamping', '/app/isoRamping', '/app/speedRamping', '/app/timelapsedelay', '/app/savePreset', '/app/loadPreset'];
+    var backArrowIconStates = ['/app/settings', '/app/about', '/app/bugreport', '/app/timelapsemenu', '/app/exposure',  '/app/bulbRamping', '/app/isoRamping', '/app/speedRamping', '/app/timelapsedelay', '/app/savePreset', '/app/loadPreset', '/app/hdrTl'];
 
-    var dynamicRoutes = ['/app/settings', '/app/timelapsemenu', '/app/exposure',  '/app/bulbRamping', '/app/isoRamping', '/app/speedRamping', '/app/timelapsedelay', '/app/timelapse'];
+    var dynamicRoutes = ['/app/settings', '/app/timelapsemenu', '/app/exposure',  '/app/bulbRamping', '/app/isoRamping', '/app/speedRamping', '/app/timelapsedelay', '/app/timelapse', '/app/hdrTl'];
 
     initView();
 

@@ -11,8 +11,8 @@
     vm.hdrUnbalancedSign = '';
     init();
 
-    vm.checkValue = function (data){ 
-      switch(data){
+    vm.checkValue = function (data) { 
+      switch(data) {
         case '-':
           vm.hdrUnbalancedNumPhotos = 1;
           vm.hdrUnbalancedSign = '-';
@@ -47,7 +47,7 @@
     }
 
     $rootScope.$on('pictureFinished', function (event) {
-      // console.log('hdr capture event');
+      console.log('hdr capture event');
       if ($hdr.settings.isActive && $hdr.settings.isWaiting && !vm.activeUnbalancedMode) {
         var device = $device.getSelectedDevice();
         $hdr.hdrCapture(device);

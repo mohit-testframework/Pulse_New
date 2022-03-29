@@ -32,7 +32,7 @@
     var devices = {
       sessionDevices: []
     };
-  let bluetoothSetting = false;
+    let bluetoothSetting = false;
     var decorruptJpegArray = function decorruptJpegArray(data) {
       var byte = 0,
         corruptStart = 0,
@@ -99,7 +99,7 @@
         blob = builder.getBlob("image/jpeg");
       }
 
-      console.log(Date.now() + ": Blob is: ", JSON.stringify(blob));
+      // console.log(Date.now() + ": Blob is: ", JSON.stringify(blob));
       var path, dir;
       var fileName = "pulseThumb" + Date.now() + ".jpg";
       if (!$platform.isAndroid()) {
@@ -1936,13 +1936,9 @@ permission.requestPermission(permission.ACCESS_COARSE_LOCATION, function( status
           }
           
         });
-
         console.log('outside setSessionDeviceToActiveOrInactiveNew');
         // _this6.setAnotherDeviceSessionAsSelected();
-
       },
-
-
 
       /**
        * setSessionDeviceToActiveOrInactive - operates on the Session Device array - setting to whether or not they are connected
@@ -2189,6 +2185,7 @@ permission.requestPermission(permission.ACCESS_COARSE_LOCATION, function( status
       },
 
       getDevicesFromStorage: function getDevicesFromStorage() {
+        console.log('in getDevicesFromStorage');
         var deferred = $q.defer();
         $cordovaNativeStorage.getItem("devices").then(
           function(localStorageDevices) {

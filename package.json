@@ -75,12 +75,7 @@
       "cordova-plugin-file-transfer": {},
       "cordova-plugin-webserver": {},
       "cordova-plugin-whitelist": {},
-      "cordova-plugin-ble-central": {
-        "BLUETOOTH_USAGE_DESCRIPTION": "This app would like to access your bluetooth for connecting with Pulse device",
-        "ACCESS_BACKGROUND_LOCATION": "false",
-        "IOS_INIT_ON_LOAD": "true",
-        "BLUETOOTH_RESTORE_STATE": "false"
-      }
+      "cordova-plugin-ble-central": {}
     },
     "platforms": [
       "ios",

@@ -134,17 +134,14 @@
         return data;
       },
 
+      // hdr: function hdr(device) {
+      //   console.log("hdr device");
 
-
-
-      hdr: function hdr(device) {
-        console.log("hdr dervice");
-
-        settings.isActive = true;
-        settings.hdrData = this.prepareHdrData(device);
-        settings.originalShutterIndex = device.metaData.camSettings.activeShutterIndex;
-        this.hdrCapture(device);
-      },
+      //   settings.isActive = true;
+      //   settings.hdrData = this.prepareHdrData(device);
+      //   settings.originalShutterIndex = device.metaData.camSettings.activeShutterIndex;
+      //   this.hdrCapture(device);
+      // },
 
       hdrCapture: function hdrCapture(device) {
         console.log("hdrCapture");
@@ -191,7 +188,7 @@
       },
 
       capture: function capture(device) {
-        console.log('settings.hdrData.movingIndex'+ JSON.stringify(settings.hdrData.movingIndex));
+        console.log('settings.hdrData.movingIndex '+ JSON.stringify(settings.hdrData.movingIndex));
         $camSettings.updateSetting(device, 'shutter', settings.hdrData.movingIndex, false);
         settings.shutterValue = $camSettings.getShutterFromIndex(settings.hdrData.movingIndex);
         $timeout(function () {
@@ -206,8 +203,6 @@
         }, 200);
       },
 
-
-      
       reset: function reset() {
         settings.iterator = 0;
         var device = $device.getSelectedDevice();
@@ -251,13 +246,5 @@
     };
   });
 })();
-
-// 3
-// 1/10
-
-// 1/20  1/10 1/5
-
-// 1/10 1/5 1/25
-
 
 

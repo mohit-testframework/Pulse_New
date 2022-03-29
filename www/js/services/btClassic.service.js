@@ -25,11 +25,10 @@
        * @return {promise} - the read data
        */
       read: function read(address) {
-        console.log("inside BTClassic read");
+        console.log("inside BTClassic read" + address);
         var deferred = $q.defer();
 
-        BluetoothClassic.read(
-          // address,
+        BluetoothClassic.read(address,
           function(buffer) {
             var view = new Uint8Array(buffer);
             console.log("successfully read data over BT Classic");

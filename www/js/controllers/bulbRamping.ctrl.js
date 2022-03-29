@@ -30,16 +30,18 @@
       // console.log('activeExposure : ' + vm.timelapseModel.timelapses[vm.dId].settings.activeExposure);
       // console.log('activeBulbExposure : ' + vm.timelapseModel.timelapses[vm.dId].settings.activeBulbExposure);
       // console.log('activeISOExposure : ' + vm.timelapseModel.timelapses[vm.dId].settings.activeISOExposure);
-      if(!vm.timelapseModel.timelapses[vm.dId].settings.activeExposure &&  !vm.timelapseModel.timelapses[vm.dId].settings.activeISOExposure){
-        if(!vm.timelapseModel.timelapses[vm.dId].settings.activeBulbExposure){
+      if (!vm.timelapseModel.timelapses[vm.dId].settings.activeExposure && 
+          !vm.timelapseModel.timelapses[vm.dId].settings.activeISOExposure &&
+          !vm.timelapseModel.timelapses[vm.dId].settings.activeHDRTl) {
+        if (!vm.timelapseModel.timelapses[vm.dId].settings.activeBulbExposure) {
            // console.log('inside activeBulbExposure if : ' + vm.timelapseModel.timelapses[vm.dId].settings.activeBulbExposure);
            $timelapse.timelapses[vm.dId].settings.activeBulbExposure = false;
-        }else {
+        } else {
            // console.log('inside activeBulbExposure else : ' + vm.timelapseModel.timelapses[vm.dId].settings.activeBulbExposure);
           $timelapse.timelapses[vm.dId].settings.activeBulbExposure = true;
         }
         
-      }else {
+      } else {
         $timelapse.timelapses[vm.dId].settings.activeBulbExposure = false;
          var modalData = {
             text: "Only one Advanced Time Lapse feature can be turned on!",
@@ -51,6 +53,7 @@
           $rootScope.$broadcast("openModal", modalData);
       }
     }
+    
     vm.onReadySwiper = function (swiper, parentClass, settingType) {
       var parent = $('.' + parentClass);
       var header = parent.find('.setting-header');

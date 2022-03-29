@@ -3,7 +3,7 @@
 (function () {
   'use strict';
 
-  pulse.services.factory('$timelapse', function ($timeout, $interval, $q, $transmit, $device, $views, $camSettings, $rootScope, $config, $location, $cordovaNativeStorage, $stateParams) {
+  pulse.services.factory('$timelapse', function ($timeout, $interval, $q, $transmit, $device, $views, $camSettings, $rootScope, $config, $location, $cordovaNativeStorage, $stateParams, $hdrTl) {
 
     //default
     var settings = {
@@ -27,6 +27,7 @@
       activeBulbExposure: false,
       activeISOExposure: false,
       activeSpeedExposure: false,
+      activeHDRTl: false,
       exposure: {
         startShutterIndex: false,
         shutterArray: [],
@@ -43,13 +44,38 @@
           minutes: 0
         }
       },
+      hdr: {
+        isActive: false,
+        // numPhotos: 3, Moved to HDRTl.ctrl
+        evSteps: 1,
+        photoCount: 0,
+        iterator: 0,
+        hdrData: undefined,
+        originalShutterIndex: 0,
+        hdrPromise: false,
+        hdrInterval: false,
+        isWaiting: false,
+        shutterValue: "",
+        forceStop: false
+      },
       exposureEV: false,
       deltaShutter: false,
       seconds: seconds,
       totalSeconds: totalSeconds,
       enumeratingTl: enumeratingTl,
-      totalPhotos: totalPhotos
+      totalPhotos: totalPhotos,
     };
+
+    $rootScope.$on('pictureFinished', function (event) {
+      var device = $device.getSelectedDevice();
+      if (timelapses[device.id].settings ) {
+        console.log('hdr tl capture event');
+        if (timelapses[device.id].settings.hdr.isActive && timelapses[device.id].settings.hdr.settings.isWaiting) {
+          hdrCapture(device);
+        }
+      }
+    });
+
     let timeInterval;
     var seconds, totalSeconds, totalPhotos;
     var enumeratingInterval = settings.interval;
@@ -98,6 +124,7 @@
               activeBulbExposure: false,
               activeISOExposure: false,
               activeSpeedExposure: false,
+              activeHDRTl: false,
               exposure: {
                 startShutterIndex: false,
                 shutterArray: [],
@@ -113,6 +140,20 @@
                   hours: 0,
                   minutes: 0
                 }
+              },
+              hdr: {
+                isActive: false,
+                // numPhotos: 3,
+                evSteps: 1,
+                photoCount: 0,
+                iterator: 0,
+                hdrData: undefined,
+                originalShutterIndex: 0,
+                hdrPromise: false,
+                hdrInterval: false,
+                isWaiting: false,
+                shutterValue: "",
+                forceStop: false
               },
               exposureEV: false,
               deltaShutter: false,
@@ -225,7 +266,8 @@
           hours: 0,
           minutes: '00',
           seconds: 0,
-          photos: 1
+          photos: 1,
+          currentShutterValue: ''
         };
       },
 
@@ -414,6 +456,7 @@
         }
         return error;
       },
+
       checkForISOExposureErrors: function checkForISOExposureErrors(deviceId) {
         var error;
         var totalTimeInMinutes = parseInt(timelapses[deviceId].settings.exposure.duration.hours) * 60 + parseInt(timelapses[deviceId].settings.exposure.duration.minutes),
@@ -492,6 +535,10 @@
 
         $transmit.refreshUSB(device, 1);
         var deviceId = device.id;
+        if (timelapses[deviceId].settings.activeHDRTl) {
+          console.log('Calling hdrTl()');
+          _this.hdrTl(device);
+        }
         if (isResuming) {
 
           //coming from a paused state, resume the TL
@@ -502,7 +549,7 @@
             if (!comingFromAppClose) {
               this.prepareCountDownObject(deviceId);
               //store the initial timelapse settings
-              $cordovaNativeStorage.setItem('timelapse', timelapses);
+             $cordovaNativeStorage.setItem('timelapse', timelapses);
             }
           }
         timelapses[deviceId].settings.isActive = true;
@@ -511,10 +558,10 @@
         timelapses[deviceId].settings.isPaused = false;
         // timelapses[deviceId].settings.enumeratingTl = {};
         // timeInterval = null;
-        if(timeInterval){
+        if (timeInterval) {
           // console.log('Inside timeInterval If');
           $interval.cancel(timeInterval);
-        }else {
+        } else {
           // console.log('Inside timeInterval Else');
         }
        
@@ -561,6 +608,7 @@
             $interval.cancel(timeInterval);
             timelapses[deviceId].settings.timer = null;
             timelapses[deviceId].settings.backgroundTime = false;
+            timelapses[deviceId].settings.activeHDRTl = false;
             $rootScope.$broadcast('timelapseFinished', {
               deviceId: deviceId
             });
@@ -569,6 +617,14 @@
           if (parseInt(timelapses[deviceId].settings.enumeratingTl.interval) > 1) {
             //keep counting down the interval timer
             timelapses[deviceId].settings.enumeratingTl.interval = timelapses[deviceId].settings.enumeratingTl.interval - 1;
+            if (timelapses[deviceId].settings.enumeratingTl.interval == timelapses[deviceId].settings.interval-3) {
+              if (timelapses[deviceId].settings.activeHDRTl) {
+                console.log('Calling HDR ' + timelapses[deviceId].settings.enumeratingTl.interval);
+                // $transmit.capture(device);
+                _this.hdrCapture(device);
+              }
+            }
+            console.log("Counting down interval " + timelapses[deviceId].settings.enumeratingTl.interval);
             if (device && device.metaData) {
               if (device.metaData.statusMode == $config.statusMode.TIMELAPSE && device.metaData.statusState != timelapses[deviceId].settings.enumeratingTl.photos) {
                 // console.log('timelapse is out of sync, resyncing');
@@ -578,6 +634,11 @@
           } else {
             //interval is resetting, subtract a photo
             var photos = parseInt(timelapses[deviceId].settings.enumeratingTl.photos) + 1;
+            // if (timelapses[deviceId].settings.activeHDRTl) {
+            //   console.log('Calling HDR');
+            //   // $transmit.capture(device);
+            //   _this.hdrCapture(device);
+            // }
             if (photos > timelapses[deviceId].settings.totalPhotos) {
               timelapses[deviceId].settings.enumeratingTl.photos = timelapses[deviceId].settings.totalPhotos;
             } else {
@@ -608,6 +669,106 @@
           //unregister the listener
           unregister();
         });
+      },
+
+      hdrTl: function hdrTl(device) {
+        console.log("hdrTl device");
+
+        timelapses[device.id].settings.hdr.isActive = true;
+        timelapses[device.id].settings.enumeratingTl.currentShutterValue = $camSettings.getShutterFromIndex(timelapses[device.id].settings.hdr.originalShutterIndex);
+        console.log('settings.hdrData.movingIndex reset shutter ' + timelapses[device.id].settings.hdr.shutterValue);
+        timelapses[device.id].settings.hdr.originalShutterIndex = device.metaData.camSettings.activeShutterIndex;
+      },
+
+      hdrCapture: function hdrCapture(device) {
+        console.log("In hdrCapture");
+
+        var _this = this;
+
+        var deferred = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : $q.defer();
+
+        timelapses[device.id].settings.hdr.isWaiting = false;
+        if (timelapses[device.id].settings.hdr.iterator < timelapses[device.id].settings.hdr.hdrData.numPhotos && !timelapses[device.id].settings.hdr.forceStop) {
+          if (timelapses[device.id].settings.hdr.hdrData.movingIndex < 0) {
+            timelapses[device.id].settings.hdr.hdrData.movingIndex = 0;
+          } else if (timelapses[device.id].settings.hdr.hdrData.movingIndex > timelapses[device.id].settings.hdr.hdrData.maxIndex) {
+            timelapses[device.id].settings.hdr.hdrData.movingIndex = timelapses[device.id].settings.hdr.hdrData.maxIndex;
+          }
+          timelapses[device.id].settings.hdr.iterator++;
+        
+          if (timelapses[device.id].settings.hdr.hdrData.movingIndex == timelapses[device.id].settings.hdr.originalShutterIndex) {
+            console.log('Skipping original Index ' + timelapses[device.id].settings.hdr.originalShutterIndex);
+            timelapses[device.id].settings.hdr.hdrData.movingIndex = timelapses[device.id].settings.hdr.hdrData.movingIndex + timelapses[device.id].settings.hdr.hdrData.incrementer;
+            timelapses[device.id].settings.hdr.isWaiting = true;
+            timelapses[device.id].settings.hdr.photoCount++;
+            timelapses[device.id].settings.hdr.iterator++;
+           }
+          
+          //change the shutter and wait a bit
+          $timeout.cancel(timelapses[device.id].settings.hdr.hdrPromise);
+          var delay = $views.getMillisecondsFromShutter(device.metaData.camSettings.shutterOptions[timelapses[device.id].settings.hdr.hdrData.movingIndex].value) ? $views.getMillisecondsFromShutter(device.metaData.camSettings.shutterOptions[timelapses[device.id].settings.hdr.hdrData.movingIndex].value) + 3000 : 3000;
+          console.log('Calling HDR Capture ' + timelapses[device.id].settings.hdr.iterator);
+          this.capture(device);
+          // setup a delay to force a picture if we don't hear back from pulse
+          timelapses[device.id].settings.hdr.hdrPromise = $timeout(function () {
+            _this.forceCapture(device);
+          }, delay);
+        } else {
+          console.log('hdr Finished');
+          $timeout.cancel(settings.hdrPromise);
+          $timeout(function () {
+            _this.hdrReset();
+          }, 500);
+          this.hdrReset();
+          deferred.resolve();
+          return deferred.promise;
+        }
+      },
+
+      hdrReset: function hdrReset() {
+        var device = $device.getSelectedDevice();
+        timelapses[device.id].settings.hdr.iterator = 0;
+        //hdr mode is all done. Go back to the original shutter setting
+        $camSettings.updateSetting(device, 'shutter', timelapses[device.id].settings.hdr.originalShutterIndex);
+        timelapses[device.id].settings.hdr.shutterValue = $camSettings.getShutterFromIndex(timelapses[device.id].settings.hdr.hdrData.movingIndex);
+        timelapses[device.id].settings.enumeratingTl.currentShutterValue = $camSettings.getShutterFromIndex(timelapses[device.id].settings.hdr.originalShutterIndex);
+        console.log('settings.hdrData.movingIndex reset shutter ' + timelapses[device.id].settings.hdr.shutterValue);
+        timelapses[device.id].settings.hdr.hdrData.movingIndex = timelapses[device.id].settings.hdr.originalShutterIndex - (((timelapses[device.id].settings.hdr.hdrData.numPhotos - 1) / 2) * timelapses[device.id].settings.hdr.hdrData.incrementer);
+        timelapses[device.id].settings.hdr.photoCount = 0;
+        timelapses[device.id].settings.hdr.isActive = false;
+        timelapses[device.id].settings.hdr.forceStop = false;
+        timelapses[device.id].settings.hdr.shutterValue = "";
+      }, 
+
+      forceCapture: function forceCapture(device) {
+        console.log('forcing capture');
+        this.hdrCapture(device);
+      },
+
+      capture: function capture(device) {
+        $camSettings.updateSetting(device, 'shutter', timelapses[device.id].settings.hdr.hdrData.movingIndex, false);
+        timelapses[device.id].settings.hdr.shutterValue = $camSettings.getShutterFromIndex(timelapses[device.id].settings.hdr.hdrData.movingIndex);
+        timelapses[device.id].settings.enumeratingTl.currentShutterValue = timelapses[device.id].settings.hdr.shutterValue;
+        console.log('settings.hdrData.movingIndex '+ timelapses[device.id].settings.hdr.hdrData.movingIndex + ' ' + timelapses[device.id].settings.hdr.originalShutterIndex+ ' ' + timelapses[device.id].settings.hdr.shutterValue);
+        // if (timelapses[device.id].settings.hdr.hdrData.movingIndex != timelapses[device.id].settings.hdr.originalShutterIndex) {
+          $timeout(function () {
+            console.log('hdr capture time ' + timelapses[device.id].settings.hdr.hdrData.movingIndex);
+            $transmit.capture(device, false);
+            timelapses[device.id].settings.hdr.hdrData.movingIndex = timelapses[device.id].settings.hdr.hdrData.movingIndex + timelapses[device.id].settings.hdr.hdrData.incrementer;
+            if (timelapses[device.id].settings.hdr.hdrData.movingIndex > timelapses[device.id].settings.hdr.hdrData.maxIndex) {
+              timelapses[device.id].settings.hdr.hdrData.movingIndex = timelapses[device.id].settings.hdr.hdrData.maxIndex;
+
+            }
+            timelapses[device.id].settings.hdr.isWaiting = true;
+            timelapses[device.id].settings.hdr.photoCount++;
+          }, 200);
+        // }
+        // else {
+        //   console.log('Skipping original Index');
+        //   timelapses[device.id].settings.hdr.hdrData.movingIndex = timelapses[device.id].settings.hdr.hdrData.movingIndex + timelapses[device.id].settings.hdr.hdrData.incrementer;
+        //   timelapses[device.id].settings.hdr.isWaiting = true;
+        //   timelapses[device.id].settings.hdr.photoCount++;
+        // }
       }
 
     };

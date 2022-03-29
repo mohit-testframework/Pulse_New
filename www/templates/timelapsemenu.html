@@ -55,6 +55,18 @@
             </a>
           </ion-item>
           <ion-item>
+            <a class="row item-row" ui-sref="app.hdrTl({deviceId:'{{ctrl.dId}}'})">
+              <div class="col left-section">
+                <div>
+                  HDR Time Lapse
+                </div>
+              </div>
+              <div class="col gotham-medium">
+                <div class="ion-ios-arrow-right right"></div>
+                <div class="blue gotham-medium right time" ng-if="ctrl.timelapseModel.timelapses[ctrl.dId].settings.activeHDRTl">On</div>
+              </div>
+            </a>
+          </ion-item>          <ion-item>
             <a class="row item-row" ui-sref="app.savePreset">
               <div class="col left-section">
                 <div>

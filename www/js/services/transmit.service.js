@@ -928,7 +928,7 @@
 
       getMacAddress: function getMacAddress(device) {
         var deferred = $q.defer();
-        console.log("fetching mac ddddd time, wtf");
+        console.log("fetching mac address");
         // console.log("sytp");
         if (!device) {
           console.log("getMacAddress: no connected device");
@@ -1113,7 +1113,7 @@
 
       requestAnalytic: function requestAnalytic(device, analytic) {
         var deferred = $q.defer();
-        console.log("Requesting device analytic");
+        // console.log("Requesting device analytic");
 
         if (!device) {
           console.log("requestAnalytic: no connected device");

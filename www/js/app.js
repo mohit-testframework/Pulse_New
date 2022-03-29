@@ -287,14 +287,12 @@ pulse.app = angular.module('pulse', ['ionic', 'pulse.controllers', 'pulse.servic
     controller: 'PhotoCtrl',
     menuItem: 'main',
     controllerAs: 'ctrl'
-
   }).state('app.video', {
     url: '/video',
     templateUrl: 'templates/video.html',
     controller: 'VideoCtrl',
     menuItem: 'video',
     controllerAs: 'ctrl'
-
   }).state('app.timelapse', {
     url: '/timelapse/:deviceId',
     cache: false,
@@ -342,6 +340,11 @@ pulse.app = angular.module('pulse', ['ionic', 'pulse.controllers', 'pulse.servic
     url: '/speedRamping/:deviceId',
     templateUrl: 'templates/speedRamping.html',
     controller: 'SpeedRampingCtrl',
+    controllerAs: 'ctrl'
+  }).state('app.hdrTl', {
+    url: '/hdrTl/:deviceId',
+    templateUrl: 'templates/hdrTl.html',
+    controller: 'hdrTlCtrl',
     controllerAs: 'ctrl'
   }).state('app.bulb', {
     url: '/bulb',

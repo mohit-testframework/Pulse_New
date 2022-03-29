@@ -30,10 +30,12 @@
       // console.log('activeExposure : ' + vm.timelapseModel.timelapses[vm.dId].settings.activeExposure);
       // console.log('activeBulbExposure : ' + vm.timelapseModel.timelapses[vm.dId].settings.activeBulbExposure);
       // console.log('activeISOExposure : ' + vm.timelapseModel.timelapses[vm.dId].settings.activeISOExposure);
-      if(!vm.timelapseModel.timelapses[vm.dId].settings.activeBulbExposure &&  !vm.timelapseModel.timelapses[vm.dId].settings.activeISOExposure){
-        if(!vm.timelapseModel.timelapses[vm.dId].settings.activeExposure){
+      if (!vm.timelapseModel.timelapses[vm.dId].settings.activeBulbExposure && 
+          !vm.timelapseModel.timelapses[vm.dId].settings.activeISOExposure &&
+          !vm.timelapseModel.timelapses[vm.dId].settings.activeHDRTl) {
+        if(!vm.timelapseModel.timelapses[vm.dId].settings.activeExposure) {
            $timelapse.timelapses[vm.dId].settings.activeExposure = false;
-        }else {
+        } else {
           $timelapse.timelapses[vm.dId].settings.activeExposure = true;
         }
         
