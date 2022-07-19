@@ -326,8 +326,7 @@
             $timeout(function() {
               masterTimer = $timeout(function() {
                 var modalData = {
-                  text:
-                    "There was a problem putting your Pulse into Update Mode. Please restart the App and your Pulse then try again.",
+                  text: "There was a problem putting your Pulse into Update Mode. Please restart the App and your Pulse then try again.",
                   onButtonClick: function onButtonClick() {
                     console.log("Could not put Pulse into Update Mode");
                     ionic.Platform.exitApp();
@@ -348,14 +347,14 @@
 
                 if ($platform.isAndroid()) {
                   
-var permission = cordova.plugins.permissions;
-permission.requestPermission(permission.ACCESS_COARSE_LOCATION, function( status ){
-    cordova.plugins.locationAccuracy.canRequest(function(canRequest){ 
+              var permission = cordova.plugins.permissions;
+              permission.requestPermission(permission.ACCESS_COARSE_LOCATION, function( status ){
+              cordova.plugins.locationAccuracy.canRequest(function(canRequest){ 
 
-         if(canRequest){
+              if (canRequest) {
 
-            cordova.plugins.locationAccuracy.isRequesting(function(requesting){
-               if(requesting){
+              cordova.plugins.locationAccuracy.isRequesting(function(requesting) {
+                if (requesting) {
 
                 cordova.plugins.locationAccuracy.request(function (geolocation_res) {
                   console.log('inside geolocation_res response : ', geolocation_res);
@@ -451,9 +450,9 @@ permission.requestPermission(permission.ACCESS_COARSE_LOCATION, function( status
                       console.log('inside geolocation_res error : ', error);                   
                     }, cordova.plugins.locationAccuracy.REQUEST_PRIORITY_HIGH_ACCURACY);  
 
-               }else if(!requesting){
+               } else if (!requesting) {
 
-                  console.log('inside geolocation_res response : ', geolocation_res);
+                // console.log('inside geolocation_res response : ', geolocation_res);
                 ble.startScan(
                   scanArray,
                   function(peripheral) {
@@ -545,22 +544,17 @@ permission.requestPermission(permission.ACCESS_COARSE_LOCATION, function( status
 
              });    
 
+              } else {
+                    console.log('request location permission and try again');    
+                } 
+                      });      
 
-         } else {
-              console.log('request location permission and try again');    
-          } 
-                 });      
-
-}, function( error ){});
-                
-  }else {
-
-       cordova.plugins.locationAccuracy.isRequesting(function(requesting){
-
-         if(requesting){
-
+              }, function( error ){});                   
+            } else {
+              cordova.plugins.locationAccuracy.isRequesting(function(requesting) {
+              if (requesting) {
                 cordova.plugins.locationAccuracy.request(function (geolocation_res) {
-                  console.log('inside geolocation_res response : ', geolocation_res);
+                console.log('inside geolocation_res response : ', geolocation_res);
                 ble.startScan(
                   scanArray,
                   function(peripheral) {
@@ -653,10 +647,10 @@ permission.requestPermission(permission.ACCESS_COARSE_LOCATION, function( status
                       console.log('inside geolocation_res error : ', error);                   
                     }, cordova.plugins.locationAccuracy.REQUEST_PRIORITY_HIGH_ACCURACY);  
 
-         }else if(!requesting){
+                } else if (!requesting) {
 
                   console.log('inside geolocation_res response : ', geolocation_res);
-                ble.startScan(
+                  ble.startScan(
                   scanArray,
                   function(peripheral) {
                     console.log("Scan result: " + peripheral.name);
@@ -744,17 +738,11 @@ permission.requestPermission(permission.ACCESS_COARSE_LOCATION, function( status
                     deferred.reject(error);
                   });
 
-         }
+                  }
 
-       });    
-
-          
-                
-   }
-
-         
+                });      
+                }      
               });
-
             }, 2000);
           };
 

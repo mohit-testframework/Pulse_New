@@ -57,7 +57,39 @@
 
     vm.tcminutes = 0;
     vm.tcseconds = 0;
+    var localStorageDevices;
+    var timelapseSettings;
+    vm.numbers = [1, 2, 3, 4, 5, 6];
+    vm.isMainDevice;
+    vm.isAllCamera = false;
+    vm.interval = 2;
+    var currentSelectedDevice, previousSelectedDevice;
 
+    $device.getDevicesFromStorage().then(function (result) {
+      localStorageDevices = sortByConnectedDevices(result);
+      console.log('TL localStorageDevices  : ' + localStorageDevices.id);
+      vm.localStorageDevices = _.filter(localStorageDevices);
+      console.log('TL vm.localStorageDevices  : ' + vm.localStorageDevices.id);
+    });
+
+    function sortByConnectedDevices(devices) {
+      var localStorageDevices = _.sortBy(devices, [function (lDevice) {
+        // console.log('lDevice.isMainDevice : ' + lDevice.isMainDevice);
+        var connectedPulses = $device.getConnectedDevices();
+        // console.log('Photo connectedPulses ' + JSON.stringify(connectedPulses));
+        var isConnected = _.find(connectedPulses, function (connectedPulse) {
+          console.log('TL Returning lDevice.id ' + JSON.stringify(lDevice.id));
+          return lDevice.id == connectedPulse.id;
+        });
+        lDevice.isConnected = isConnected;
+        if (lDevice.isConnected) {
+          console.log('TL Returning lDevice.isConnected ' + lDevice.isConnected.id);
+          return lDevice.isConnected;
+        }
+      }]);
+      console.log('TL Returning localStorageDevices ' + localStorageDevices.id);
+      return localStorageDevices;
+    }
 
     //initialize view variables
     initView();
@@ -113,7 +145,7 @@
       }
       
       $scope.tlSettings.interval = parseInt($timelapse.timelapses[dId].settings.interval);
-       document.getElementById("incrementerValueTimelapse").innerHTML = parseInt($scope.tlSettings.interval);
+      document.getElementById("incrementerValueTimelapse").innerHTML = parseInt($scope.tlSettings.interval);
        // console.log('$scope.tlSettings.interval : ' + $scope.tlSettings.interval);
 
       // let minutes = (time.minutes* 1.5);
@@ -222,37 +254,36 @@
           intervalTest = $scope.tlSettings.interval;
           $cordovaVibration.vibrate(25);
 
-       if (timeIntervalLongExposure) {
+        if (timeIntervalLongExposure) {
           // console.log('Interval cancel timeIntervalLongExposure: ' + timeIntervalLongExposure);
           
-                firstTime = true;
-                vm.currentCount = 0;
-                intervalTest = 0;  
-                currenttime = 0; 
-                tccurrenttime = 0;  
-                vm.totalExposureMinutes = 0; 
-                totalExposureSeconds = 0;
-                totalExposureCount = 0;
-                totalExposureIntervalTime = 0;
+          firstTime = true;
+          vm.currentCount = 0;
+          intervalTest = 0;  
+          currenttime = 0; 
+          tccurrenttime = 0;  
+          vm.totalExposureMinutes = 0; 
+          totalExposureSeconds = 0;
+          totalExposureCount = 0;
+          totalExposureIntervalTime = 0;
 
-               
-                // $interval.cancel(timeIntervalLongExposure);
-                clearInterval(timeIntervalLongExposure);
-                 timeIntervalLongExposure = null
-                // clearInterval(timeIntervalLongExposure);
+          
+          // $interval.cancel(timeIntervalLongExposure);
+          clearInterval(timeIntervalLongExposure);
+            timeIntervalLongExposure = null
+          // clearInterval(timeIntervalLongExposure);
         }
 
-          vm.totalExposureMinutes = (parseInt($scope.tlSettings.duration.hours) * 60) + parseInt($scope.tlSettings.duration.minutes);
-          totalExposureSeconds = ((parseInt($scope.tlSettings.duration.hours) * 60) * 60 ) + (parseInt($scope.tlSettings.duration.minutes) * 60);
-          totalExposureCount = Math.floor( totalExposureSeconds / parseInt($scope.tlSettings.interval));
-          totalExposureIntervalTime = (parseInt($scope.tlSettings.interval * 1000));
-          // console.log('totalExposureIntervalTime : ' + totalExposureIntervalTime);
+        vm.totalExposureMinutes = (parseInt($scope.tlSettings.duration.hours) * 60) + parseInt($scope.tlSettings.duration.minutes);
+        totalExposureSeconds = ((parseInt($scope.tlSettings.duration.hours) * 60) * 60 ) + (parseInt($scope.tlSettings.duration.minutes) * 60);
+        totalExposureCount = Math.floor( totalExposureSeconds / parseInt($scope.tlSettings.interval));
+        totalExposureIntervalTime = (parseInt($scope.tlSettings.interval * 1000));
+        // console.log('totalExposureIntervalTime : ' + totalExposureIntervalTime);
 
-          totalExposureTime = (parseInt($scope.duration.timed.hours) * 60) + parseInt($scope.duration.timed.minutes);
-          // console.log('totalExposureSeconds : ' + totalExposureSeconds);
+        totalExposureTime = (parseInt($scope.duration.timed.hours) * 60) + parseInt($scope.duration.timed.minutes);
+        // console.log('totalExposureSeconds : ' + totalExposureSeconds);
 
-
-      timeIntervalLongExposure = setInterval(function hello() { 
+        timeIntervalLongExposure = setInterval(function hello() { 
         // console.log('$bulb.settings.currentTimer : ' + $bulb.settings.currentTimer);
         // console.log('intervalTest : ' + intervalTest);
         // console.log('$bulb.settings.newActiveSeconds : ' + $bulb.settings.newActiveSeconds);
@@ -263,108 +294,95 @@
          //        vm.tcminutes = $views.getMinutes(tccurrenttime);
          //    }
 
-            tccurrenttime = tccurrenttime + 1;
-     if (tccurrenttime <= totalExposureSeconds) {
-
-        if (vm.currentCount <= totalExposureCount) {
-             
+          tccurrenttime = tccurrenttime + 1;
+        if (tccurrenttime <= totalExposureSeconds) {
+          if (vm.currentCount <= totalExposureCount) {            
             // Update GUI based on the time (seconds)
-            if(currenttime <= $scope.tlSettings.interval){
-
-              if(currenttime <= totalExposureTime){
+            if (currenttime <= $scope.tlSettings.interval) {
+              if (currenttime <= totalExposureTime){
                 vm.cseconds = $views.getSeconds(currenttime);
                 vm.cminutes = $views.getMinutes(currenttime);
-              }else {
-                 vm.cseconds = '0'+ 0;
-                 vm.cminutes = 0;
-              }
-              
+              } else {
+                  vm.cseconds = '0'+ 0;
+                  vm.cminutes = 0;
+              }        
               // console.log('vm.cseconds : ' + vm.cseconds);
               // console.log('vm.cminutes : ' + vm.cminutes);
               currenttime = currenttime + 1;    
 
-            }else {
-               currenttime = 1;
-               vm.cseconds = $views.getSeconds(currenttime);
+            } else {
+                currenttime = 1;
+                vm.cseconds = $views.getSeconds(currenttime);
               vm.cminutes = $views.getMinutes(currenttime);
-              currenttime = currenttime + 1;
-                         
+              currenttime = currenttime + 1;           
             }
 
-             if((intervalTest == $bulb.settings.currentTimer) || firstTime) {
-
-                  if(!firstTime){
-                    intervalTest = parseInt(intervalTest) + parseInt($scope.tlSettings.interval);
-                  }
-                  
-                   firstTime = false;
-                    vm.currentCount = vm.currentCount + 1;
-                    if(vm.currentCount > totalExposureCount){
-                                firstTime = true;
-                                vm.currentCount = 0;
-                                intervalTest = 0;
-                                currenttime = 0;
-
-                                // $interval.cancel(timeIntervalLongExposure);
-                                clearInterval(timeIntervalLongExposure);
-                                timeIntervalLongExposure = null;
-                                
-                                 $bulb.stopBulbTimelapse();
-                    } else {
-                          $bulb.startBulbTimelapse($scope.tlSettings.duration, parseInt($scope.tlSettings.interval));
-                          var maxMinutes = Math.floor($bulb.duration.animationValues.max / 60);
-                          var maxSeconds = $bulb.duration.animationValues.max - maxMinutes * 60;
-                          if (maxMinutes.toString().length == 1) {
-                            maxMinutes = maxMinutes;
-                          }
-                          if (maxSeconds.toString().length == 1) {
-                            maxSeconds = '0' + maxSeconds;
-                          }
-                          vm.maxMinutes = maxMinutes;
-                          vm.maxSeconds = maxSeconds;
-                          $scope.$broadcast('timer-start');
-                          $cordovaNativeStorage.setItem('bulb', {
-                            startTime: Date.now(),
-                            settings: $bulb.settings,
-                            duration: $bulb.duration
-                          });                      
-                    }
-
-
-
-                }
-              }else {
-                firstTime = true;
-                vm.currentCount = 0;
-                intervalTest = 0;
-                currenttime = 0;
-                tccurrenttime = 0;
-
-                // $interval.cancel(timeIntervalLongExposure);
-                clearInterval(timeIntervalLongExposure);
-                timeIntervalLongExposure = null;
-                
-                 $bulb.stopBulbTimelapse();
+            if ((intervalTest == $bulb.settings.currentTimer) || firstTime) {
+              if (!firstTime) {
+                intervalTest = parseInt(intervalTest) + parseInt($scope.tlSettings.interval);
               }
-            }else {
+              
+              firstTime = false;
+              vm.currentCount = vm.currentCount + 1;
+              if (vm.currentCount > totalExposureCount) {
                 firstTime = true;
                 vm.currentCount = 0;
                 intervalTest = 0;
                 currenttime = 0;
-                tccurrenttime = 0;
 
                 // $interval.cancel(timeIntervalLongExposure);
                 clearInterval(timeIntervalLongExposure);
                 timeIntervalLongExposure = null;
                 
-                 $bulb.stopBulbTimelapse();
+                $bulb.stopBulbTimelapse();
+              } else {
+                $bulb.startBulbTimelapse($scope.tlSettings.duration, parseInt($scope.tlSettings.interval));
+                var maxMinutes = Math.floor($bulb.duration.animationValues.max / 60);
+                var maxSeconds = $bulb.duration.animationValues.max - maxMinutes * 60;
+                if (maxMinutes.toString().length == 1) {
+                  maxMinutes = maxMinutes;
+                }
+                if (maxSeconds.toString().length == 1) {
+                  maxSeconds = '0' + maxSeconds;
+                }
+                vm.maxMinutes = maxMinutes;
+                vm.maxSeconds = maxSeconds;
+                $scope.$broadcast('timer-start');
+                $cordovaNativeStorage.setItem('bulb', {
+                  startTime: Date.now(),
+                  settings: $bulb.settings,
+                  duration: $bulb.duration
+                });                      
+              }
             }
+          } else {
+            firstTime = true;
+            vm.currentCount = 0;
+            intervalTest = 0;
+            currenttime = 0;
+            tccurrenttime = 0;
 
-              return hello;
+            // $interval.cancel(timeIntervalLongExposure);
+            clearInterval(timeIntervalLongExposure);
+            timeIntervalLongExposure = null;
+            
+            $bulb.stopBulbTimelapse();
+          }
+          } else {
+            firstTime = true;
+            vm.currentCount = 0;
+            intervalTest = 0;
+            currenttime = 0;
+            tccurrenttime = 0;
 
-       }(), 1000);
-
-
+            // $interval.cancel(timeIntervalLongExposure);
+            clearInterval(timeIntervalLongExposure);
+            timeIntervalLongExposure = null;
+            
+            $bulb.stopBulbTimelapse();
+          }
+          return hello;
+        }(), 1000);
         }
       }
       if (!canProceed) {
@@ -583,6 +601,121 @@
       }
     };
 
+    vm.isMoreThanOneDeviceConnected = function() {
+      // console.log('vm.localStorageDevices length : ' + vm.localStorageDevices.length);
+      if (vm.localStorageDevices || vm.localStorageDevices != undefined || vm.localStorageDevices != null) {
+        if (vm.localStorageDevices.length != 0 && vm.localStorageDevices.length > 1) {
+          let count = 0;
+          for (var i = 0; i < vm.localStorageDevices.length; i++) {    
+            if (vm.localStorageDevices[i] && vm.localStorageDevices[i] != undefined) {
+              if (vm.localStorageDevices[i].isConnected != undefined && vm.localStorageDevices[i].isConnected.isConnected) {
+                // console.log('inside count : ' + i +  vm.localStorageDevices[i].isConnected.isConnected);
+                count = count + 1;
+              }            
+            }      
+          }
+          if (count > 1) {
+            // console.log('inside count if part in TL ctrl');
+            return true;
+            } else {
+            // console.log('inside count else part');
+            return false;
+          }
+        } else {
+          // console.log('inside length less than 1 else part');
+          return false;
+        }
+       
+      } else {
+        // console.log('inside localStorageDevices undefined else part');
+        return false;
+      }
+    };
+
+    vm.setAllCameras = function() {
+      var device = $device.getSelectedDevice();
+      if (vm.isAllCamera) {
+        device.metaData.isAllCamera = true;
+        console.log('Setting all cameras to true');
+      } else {
+        device.metaData.isAllCamera = false;
+        console.log('Setting all cameras to false');
+      }
+    };
+
+    vm.getCameraModel = function(device) {
+      var selectedDevice = _.find($device.devices, function (item) {
+        return device.id == item.id;
+      });
+      if (!selectedDevice) {
+        return 'Not Connected';
+      } else if (selectedDevice.metaData && selectedDevice.metaData.statusMode == $config.statusMode.CHARGING && selectedDevice.metaData.statusState == $config.statusState.START) {
+        return 'Charging';
+      } else if (selectedDevice.metaData && selectedDevice.metaData.cameraConnected) {
+        if (typeof selectedDevice.metaData.cameraType == 'undefined') {
+          return 'Connecting Camera';
+        } else {
+          return $camSettings.getCameraModel(selectedDevice.metaData);
+        }
+      } else {
+        return 'No Camera';
+      }
+    };
+
+    vm.setNewDevice = function(device, $event){
+      // console.log('device : ' + JSON.stringify(device));
+      previousSelectedDevice = currentSelectedDevice;
+      currentSelectedDevice =  device;
+       // $device.setDevice(device);
+       console.log('Changing Active Device and moving Settings');
+       $timelapse.timelapses[currentSelectedDevice.id] = $timelapse.timelapses[previousSelectedDevice];
+       $device.setSessionDeviceToActiveOrInactiveNew(device, false);
+    }
+
+    vm.connectOrDisconnectDevice = function(device, $event) {
+      console.log('inside connectOrDisconnectDevice : ');
+      $event.stopPropagation();
+      var index;
+
+      _.forEach(vm.localStorageDevices, function(localStorageDevice, $index) {
+         console.log('localStorageDevice : ' + localStorageDevice.isMainDevice);
+        if (localStorageDevice.id == device.id) {
+          localStorageDevice.isScanning = true;
+          if (vm.isDeviceActive(device)) {
+
+            //disconnect device
+            
+            // $device.disconnectPulse(device, false, false).then(function (response) {
+            //   localStorageDevice.isScanning = false;
+            // });
+          } else {
+            var timer = $timeout(function () {
+              localStorageDevice.isScanning = false;
+            }, 8000);
+            device.bypass = true;
+            //connect device
+            $device.buildAndConnect(device, 0, 0, true).then(function (response) {
+              localStorageDevice.isScanning = false;
+              $timeout.cancel(timer);
+            }, function (error) {
+              localStorageDevice.isScanning = false;
+              $timeout.cancel(timer);
+            });
+          }
+        }
+      });
+    };
+
+    vm.isDeviceActive = function (device) {
+      var isActive = false;
+      _.forEach($device.devices, function (activeDevice) {
+        if (device.id == activeDevice.id) {
+          isActive = true;
+        }
+      });
+      return isActive;
+    };
+
     vm.isNumber = function(n) {
       return $views.isNumber(n);
     };
@@ -704,7 +837,9 @@
       if (!$timelapse.timelapses[deviceId].settings.duration.isInfinite) {
         vm.minuteString = $timelapse.renderMinutes(deviceId);
       }
-      $timelapse.start(device);
+      if (device.metaData.isAllCamera) {
+        $timelapse.start(device, localStorageDevices);
+      } else $timelapse.start(device);
     }
 
     vm.getCurrentShutter = function() {
@@ -752,7 +887,11 @@
       vm.dId = dId;
       $timelapse.initModel(dId);
       vm.timelapseModel = $timelapse;
+      vm.isAllCamera = vm.deviceModel.metaData.isAllCamera;
       $scope.tlSettings = $timelapse.timelapses[dId].settings;
+      if (vm.isMoreThanOneDeviceConnected) {
+        vm.isAllCamera = vm.deviceModel.metaData.isAllCamera;
+      }
 
       if ($timelapse.timelapses[dId].settings.hdr.hdrData) {
         console.log('Number of HDR photos = ' + $timelapse.timelapses[dId].settings.hdr.hdrData.numPhotos);
@@ -807,12 +946,8 @@
           } else {
             $scope.tlSettings = $timelapse.timelapses[dId].settings;
           }
-    
-
+  
        // document.getElementById("incrementerValueTimelapse").innerHTML = parseInt($scope.tlSettings.interval);
-
-
-
       // if(vm.model1.settings.isTimed){
       //   let incrementerValue = document.getElementById("incrementer-value")[0];
       //        incrementerValue.innerHTML = '45';
@@ -856,29 +991,6 @@
         }
       });
     }
-
-  
-  // function setBulbBackgroundMode() {
-  //     $ionicPlatform.on('pause', function (event) {
-  //       console.log('saving bulb mode in background mode');
-  //       if ($bulb.settings.isActive && $bulb.settings.isTimed) {
-  //         $bulb.settings.backgroundTime = Date.now();
-  //         $bulb.settings.backgroundMode = true;
-  //         $bulb.cancelInterval();
-  //       }
-  //     });
-
-  //     $ionicPlatform.on('resume', function (event) {
-  //       console.log('refreshing bulb mode in background');
-  //       if ($bulb.settings.isActive && $bulb.settings.isTimed) {
-  //         var currentTime = Date.now();
-  //         var ellapsedTime = Math.round((currentTime - $bulb.settings.backgroundTime) / 1000);
-  //         $bulb.startInterval(ellapsedTime);
-  //       }
-  //     });
-  //   }
-
-
 
     // Disable drag-to-open menu
     $scope.$on("$ionicView.enter", function() {
@@ -1065,5 +1177,6 @@
       }
       return disabled;
     };
+
   });
 })();

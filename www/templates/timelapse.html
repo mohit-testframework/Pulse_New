@@ -9,9 +9,7 @@
       <!-- TL Slide 1 -->
       <ion-slide>
         <div class="timelapse-container col">
-          <div
-            ng-class="!ctrl.model1.settings.isActive && !ctrl.showPreview ? 'animated fadeIn' : 'hide'"
-          >
+          <div ng-class="!ctrl.model1.settings.isActive && !ctrl.showPreview ? 'animated fadeIn' : 'hide'">
             <div
               class="preset-name"
               ng-if="ctrl.presetModel.settings.presetName.length"
@@ -175,7 +173,23 @@
                   time-incrementer-name="delay"
                 ></timeincrementer>
               </div>
-              <!-- </div> -->
+              <div class="toggle-contain text-center all-camera-toggle" ng-if="ctrl.isMoreThanOneDeviceConnected()">
+                <ion-toggle ng-model="ctrl.isAllCamera" ng-checked="ctrl.isAllCamera" class="grey" ng-change="ctrl.setAllCameras()">
+                  All Cameras
+                </ion-toggle>
+              </div>
+<!--              <ion-scroll  direction="xy" class="allcamera-scroll">
+                <div class="custom-radio-list">
+                  <ion-list ng-if="ctrl.localStorageDevices" >
+                    <div class="row" style="flex-wrap: wrap" ng-if="ctrl.isMoreThanOneDeviceConnected()">
+                      <div class="col col-50" ng-repeat="localStorageDevice in ctrl.localStorageDevices" ng-if="localStorageDevice">
+                        <ion-radio ng-if="ctrl.getCameraModel(localStorageDevice) != 'Not Connected' && ctrl.getCameraModel(localStorageDevice) != 'Charging'" ng-model="ctrl.isMainDevice" ng-value="localStorageDevice.id" style="color: #fff; margin-left: 10px; margin-right: 10px; font-size: 14px !important" ng-click="ctrl.setNewDevice(localStorageDevice, $event)"> {{ctrl.getCameraModel(localStorageDevice)}}</ion-radio>
+                      </div>
+                    </div>
+                  </ion-list>
+                </div>
+              </ion-scroll>
+              </div> -->
             </div>
           </div>
 
@@ -293,7 +307,7 @@
           <div class="row row-center center total-time">
             
           </div>
-        </div> -->
+          </div> -->
             </div>
           </div>
         </div>
@@ -405,7 +419,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="row center-row" ng-if="ctrl.timelapseModel.timelapses[ctrl.dId].settings.activeHDRTl">
+                     <div class="row center-row" ng-if="ctrl.timelapseModel.timelapses[ctrl.dId].settings.activeHDRTl">
                         <div class="row left-photo">
                           <img ng-src="img/ShutterIconwhiteback18x18.png" />
                         </div>

@@ -93,10 +93,6 @@
                 eat-click-if="menuItem.notReady || (menuItem.greyOut && vm.isTimelapseActive())"
                 ng-class="menuItem.notReady || (menuItem.greyOut && vm.isTimelapseActive())">
                 <span class="{{menuItem.icon}} menu-icon col col-10 col-offset-5"></span>
-<!--                 <img  ng-if="(menuItem.name == 'bulb' || menuItem.name == 'hdr' || menuItem.name == 'devices')" class="sideMenuImage" src="{{menuItem.icon}}" alt="">
-                  <img  ng-if="(menuItem.name == 'bulb')" class="sideMenuImage-selected" src="img/icon01.png" alt="">
-                  <img  ng-if="( menuItem.name == 'hdr')" class="sideMenuImage-selected" src="img/icon02.png" alt="">
-                  <img  ng-if="(menuItem.name == 'devices')" class="sideMenuImage-selected" src="img/icon03.png" alt=""> -->
                 <span class="col label-item">
                   {{menuItem.label}}
                   <span class="right gotham-light white tl-percent" ng-if="menuItem.showPercentage && vm.isTimelapseActive()">

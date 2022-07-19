@@ -1,106 +1,78 @@
 <ion-view view-title="Photo" class="photo">
   <ion-content class="has-header photo-header" scroll="false">
-  <div>
-    <div class="photo-container">
-      <div class="row row-center center">
-        <div class="col center image-preview">
+    <div>
+      <div class="photo-container">
+        <div class="row row-center center">
+          <div class="col center image-preview">
 
-          <div class="img-container" ng-click="ctrl.toggleHistogram()" ng-if="thumbCapable" style="height: 237.5px;">
-            <div
-              ng-if="(!ctrl.isBtClassicConnected() || !ctrl.histogram) && ctrl.selectedDevice.btClassic.enabled"
-              class="thumb white-box"
-              ng-class="(ctrl.btClassic.settings.enabled) ? '': 'defaultThumb'"
-              style="background-image: linear-gradient(rgba(0, 0, 0, {{ctrl.backgroundGradient}}), rgba(0, 0, 0, {{ctrl.backgroundGradient}})), url({{ctrl.thumb}});">
-              
-              <!-- style=`background-image: linear-gradient(rgba(0, 0, 0, ${ctrl.backgroundGradient}), rgba(0, 0, 0, ${ctrl.backgroundGradient}) ), url(${ctrl.thumb});`> -->
-              <ion-spinner icon="circles" ng-show="ctrl.showSpinner && ctrl.selectedDevice.btClassic.enabled" class="circlesreg"></ion-spinner>
-            </div>
-            <div class="hist-chart white-box" ng-if="ctrl.histogram">
-              <canvas
-                id="bar"
-                class="chart chart-bar"
-                chart-data="ctrl.histogramItems.data"
-                chart-labels="ctrl.histogramItems.labels"
-                chart-series="ctrl.histogramItems.series"
-                chart-options="ctrl.histogramItems.options"
-                chart-colours="ctrl.histogramItems.colours">
-              </canvas>
-              <ion-spinner icon="circles" ng-show="ctrl.showSpinner && ctrl.selectedDevice.btClassic.enabled" class="circleshist"></ion-spinner>
-              <div class="camSettings black text-center gotham-light">
-                <span class="shutter" ng-if="ctrl.camSettings.shutter.value">{{ctrl.camSettings.shutter.value}}s</span>
-                <span class="aperture" ng-if="ctrl.camSettings.aperture.value">f/{{ctrl.camSettings.aperture.value}}</span>
-                <span class="iso" ng-if="ctrl.camSettings.iso.value">ISO
-                  {{ctrl.camSettings.iso.value}}</span>
+            <div class="img-container" ng-click="ctrl.toggleHistogram()" ng-if="thumbCapable" style="height: 237.5px;">
+              <div
+                ng-if="(!ctrl.isBtClassicConnected() || !ctrl.histogram) && ctrl.selectedDevice.btClassic.enabled"
+                class="thumb white-box"
+                ng-class="(ctrl.btClassic.settings.enabled) ? '': 'defaultThumb'"
+                style="background-image: linear-gradient(rgba(0, 0, 0, {{ctrl.backgroundGradient}}), rgba(0, 0, 0, {{ctrl.backgroundGradient}})), url({{ctrl.thumb}});">
+                
+                <!-- style=`background-image: linear-gradient(rgba(0, 0, 0, ${ctrl.backgroundGradient}), rgba(0, 0, 0, ${ctrl.backgroundGradient}) ), url(${ctrl.thumb});`> -->
+                <ion-spinner icon="circles" ng-show="ctrl.showSpinner && ctrl.selectedDevice.btClassic.enabled" class="circlesreg"></ion-spinner>
               </div>
+              <div class="hist-chart white-box" ng-if="ctrl.histogram">
+                <canvas
+                  id="bar"
+                  class="chart chart-bar"
+                  chart-data="ctrl.histogramItems.data"
+                  chart-labels="ctrl.histogramItems.labels"
+                  chart-series="ctrl.histogramItems.series"
+                  chart-options="ctrl.histogramItems.options"
+                  chart-colours="ctrl.histogramItems.colours">
+                </canvas>
+                <ion-spinner icon="circles" ng-show="ctrl.showSpinner && ctrl.selectedDevice.btClassic.enabled" class="circleshist"></ion-spinner>
+                <div class="camSettings black text-center gotham-light">
+                  <span class="shutter" ng-if="ctrl.camSettings.shutter.value">{{ctrl.camSettings.shutter.value}}s</span>
+                  <span class="aperture" ng-if="ctrl.camSettings.aperture.value">f/{{ctrl.camSettings.aperture.value}}</span>
+                  <span class="iso" ng-if="ctrl.camSettings.iso.value">ISO
+                    {{ctrl.camSettings.iso.value}}</span>
+                </div>
+              </div>
+              <div class="helper-hist text-center gotham-light grey" ng-show="ctrl.showHistText()">Tap for Histogram</div>
             </div>
-            <div class="helper-hist text-center gotham-light grey" ng-show="ctrl.showHistText()">Tap for Histogram</div>
+            <div class="no-thumbnails text-center gotham-light" ng-if="!thumbCapable">
+              Thumbnails are not supported for your device.
+            </div>
           </div>
-          <div class="no-thumbnails text-center gotham-light" ng-if="!thumbCapable">
-            Thumbnails are not supported for your device.
-          </div>
-        </div>
 
+        </div>
       </div>
-    </div>
-    <!-- <div class="toggle-contain text-center" ng-if="ctrl.showThumbToggle() && thumbCapable" style="height: 7%;"> -->
+      <!-- <div class="toggle-contain text-center" ng-if="ctrl.showThumbToggle() && thumbCapable" style="height: 7%;"> -->
       <div class="toggle-contain text-center"  ng-if="ctrl.showThumbToggle() && thumbCapable" style="height: 25px;">
-      <ion-toggle ng-change="ctrl.handleToggle(ctrl.selectedDevice.btClassic.enabled)" ng-model="ctrl.selectedDevice.btClassic.enabled" ng-checked="ctrl.selectedDevice.btClassic.enabled" class="grey">
-        Thumbnail
-      </ion-toggle>
-    </div>
-        <!-- <div class="row row-center center text-center delay margin-class-enable-delay-photopage" ng-if="ctrl.isMoreThanOneDeviceConnected()"> -->
-    <div class="toggle-contain text-center all-camera-toggle" ng-if="ctrl.isMoreThanOneDeviceConnected()">
-      <ion-toggle ng-model="ctrl.isAllCamera" ng-checked="ctrl.isAllCamera" class="grey" >
-        All Cameras
-      </ion-toggle>
-    </div>
-
-      <!-- <div ng-if="(ctrl.isMoreThanOneDeviceConnected()) && (ctrl.isAllCamera == true)">
-
-      <div class="row row-center center text-center gotham-light" style="margin-top: 5px;" >Delay Between Photos</div>
-      <div class="row row-center center text-center incrementer-spacer" style="margin-top: -15px;">
-        <div>
-          <timelapseincrementer  ng-model="ctrl.interval" initval="{{ctrl.interval}}" postfix="s" min=2 max=1200 swipe-interval=50 incrementer-name="photo" ng-change="ctrl.changeExposureTime(ctrl.interval)"></timelapseincrementer>
-        </div>
-       
+        <ion-toggle ng-change="ctrl.handleToggle(ctrl.selectedDevice.btClassic.enabled)" ng-model="ctrl.selectedDevice.btClassic.enabled" ng-checked="ctrl.selectedDevice.btClassic.enabled" class="grey">
+          Thumbnail
+        </ion-toggle>
       </div>
-    </div> -->
-
-
-
-  </div>
-
-<!-- <div class = "row" ng-repeat="localStorageDevice in ctrl.localStorageDevices">
-   <div class = "col col-50">col 1</div>
-   <div class = "col col-50">col 2</div>
-</div> -->
-
-<ion-scroll  direction="xy" class="allcamera-scroll">
-  <div class="custom-radio-list">
-    <!-- <ion-list ng-if="ctrl.localStorageDevices && !ctrl.isEmpty()" > -->
-      <ion-list ng-if="ctrl.localStorageDevices" >
-      <!-- <div class="row" style="flex-wrap: wrap" ng-if="ctrl.isMoreThanOneDeviceConnected()"> -->
-    <div class="row" style="flex-wrap: wrap" ng-if="ctrl.isMoreThanOneDeviceConnected()">
-        <div class="col col-50" ng-repeat="localStorageDevice in ctrl.localStorageDevices" ng-if="localStorageDevice">
-          <ion-radio ng-if="ctrl.getCameraModel(localStorageDevice) != 'Not Connected' && ctrl.getCameraModel(localStorageDevice) != 'Charging'" ng-model="ctrl.isMainDevice" ng-value="localStorageDevice.id" style="color: #fff; margin-left: 10px; margin-right: 10px; font-size: 14px !important" ng-click="ctrl.setNewDevice(localStorageDevice, $event)"> {{ctrl.getCameraModel(localStorageDevice)}}</ion-radio>
-
-        <!-- <ion-radio ng-model="ctrl.selectedDevice.id" ng-value="localStorageDevice.id" style="color: #fff; margin-left: 10px; margin-right: 10px; font-size: 14px !important" ng-click="ctrl.setNewDevice(localStorageDevice, $event)"> {{ctrl.getCameraModel(localStorageDevice)}}</ion-radio>  -->
-
-       </div>
+          <!-- <div class="row row-center center text-center delay margin-class-enable-delay-photopage" ng-if="ctrl.isMoreThanOneDeviceConnected()"> -->
+      <div class="toggle-contain text-center all-camera-toggle" ng-if="ctrl.isMoreThanOneDeviceConnected()">
+        <ion-toggle ng-model="ctrl.isAllCamera" ng-checked="ctrl.isAllCamera" class="grey" ng-change="ctrl.setAllCameras()">
+          All Cameras
+        </ion-toggle>
+      </div>
     </div>
 
-  </ion-list>
- </div>
-</ion-scroll>
+    <ion-scroll  direction="xy" class="allcamera-scroll">
+      <div class="custom-radio-list">
+        <ion-list ng-if="ctrl.localStorageDevices" >
+          <div class="row" style="flex-wrap: wrap" ng-if="ctrl.isMoreThanOneDeviceConnected()">
+            <div class="col col-50" ng-repeat="localStorageDevice in ctrl.localStorageDevices" ng-if="localStorageDevice">
+              <ion-radio ng-if="ctrl.getCameraModel(localStorageDevice) != 'Not Connected' && ctrl.getCameraModel(localStorageDevice) != 'Charging'" ng-model="ctrl.isMainDevice" ng-value="localStorageDevice.id" style="color: #fff; margin-left: 10px; margin-right: 10px; font-size: 14px !important" ng-click="ctrl.setNewDevice(localStorageDevice, $event)"> {{ctrl.getCameraModel(localStorageDevice)}}</ion-radio>
+            </div>
+          </div>
+        </ion-list>
+      </div>
+    </ion-scroll>
+  </ion-content>
 
-
-
-</ion-content>
-
-<div class="row fixed-bottom-section" style="bottom: 4vh;"> 
-  <div class="col text-center">
-    <div class="red gotham-light bulb-warning {{ctrl.bulbClass}}">{{ctrl.errorText}}</div>
-    <photo-button partial-url="photoButton" on-item-click="ctrl.takePhoto()" fill="{{ctrl.fill}}" on-item-release="ctrl.endBurst()" on-item-hold="ctrl.burst()" animate-time="{{ctrl.animationSettings.shutterCounter}}" animate-max="{{ctrl.animationSettings.maxShutter}}"></photo-button>
+  <div class="row fixed-bottom-section" style="bottom: 4vh;"> 
+    <div class="col text-center">
+      <div class="red gotham-light bulb-warning {{ctrl.bulbClass}}">{{ctrl.errorText}}</div>
+      <photo-button partial-url="photoButton" on-item-click="ctrl.takePhoto()" fill="{{ctrl.fill}}" on-item-release="ctrl.endBurst()" on-item-hold="ctrl.burst()" animate-time="{{ctrl.animationSettings.shutterCounter}}" animate-max="{{ctrl.animationSettings.maxShutter}}"></photo-button>
+    </div>
   </div>
-</div>
 </ion-view>

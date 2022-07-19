@@ -55,7 +55,7 @@
             
             $timeout(function() {
               
-              $transmit.capture(device, false).then(function(response){
+              $transmit.capture(device, false).then(function(response) {
                   // $transmit.reportActivity();
                   // console.log('Photo service page $transmit.capture response : ', response);
                   $timeout(function () {
@@ -74,7 +74,7 @@
                       deferred.reject(error);
                     }, 100);
                   },1000);
-              },function (error) {
+              }, function (error) {
                     // let element = document.getElementById("photo-ring-div");
                     // element.style.opacity = "1";
                     // element.style.filter  = 'alpha(opacity=100)';       

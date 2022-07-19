@@ -68,10 +68,13 @@
 
     $rootScope.$on('pictureFinished', function (event) {
       var device = $device.getSelectedDevice();
-      if (timelapses[device.id].settings ) {
-        console.log('hdr tl capture event');
-        if (timelapses[device.id].settings.hdr.isActive && timelapses[device.id].settings.hdr.settings.isWaiting) {
-          hdrCapture(device);
+      if (device) {
+        // console.log('In pictureFinished ' + JSON.stringify(timelapses[device.id]));
+        if (timelapses[device.id]) {
+          console.log('hdr tl capture event');
+          if (timelapses[device.id].settings.hdr.isActive && timelapses[device.id].settings.hdr.settings.isWaiting) {
+            hdrCapture(device);
+          }
         }
       }
     });
@@ -526,7 +529,7 @@
        * start - fires off a time lapse
        * @return {null}
        */
-      start: function start(device) {
+      start: function start(device, localStorageDevices) {
         // console.log('Inside start');
         var _this = this;
 
@@ -564,8 +567,13 @@
         } else {
           // console.log('Inside timeInterval Else');
         }
+        if (device.metaData.isAllCamera == true) {
+          var previousDevices = [];
+          console.log('TL taking pics with other cameras ' + localStorageDevices.id);
+          _this.takePhotoRestOfDevices(device, localStorageDevices, previousDevices);
+        }
        
-         timeInterval = $interval(function () {
+        timeInterval = $interval(function () {
           // console.log('backgroundMode : ' + timelapses[deviceId].settings.backgroundMode);
 
           if (timelapses[deviceId].settings.backgroundMode) {
@@ -616,7 +624,14 @@
           }
           if (parseInt(timelapses[deviceId].settings.enumeratingTl.interval) > 1) {
             //keep counting down the interval timer
-            timelapses[deviceId].settings.enumeratingTl.interval = timelapses[deviceId].settings.enumeratingTl.interval - 1;
+            // if (timelapses[deviceId].settings.enumeratingTl.interval == timelapses[deviceId].settings.interval) {
+            //   if (device.metaData.isAllCamera == true) {
+            //     var previousDevices = [];
+            //     console.log('TL taking pics with other cameras ' + localStorageDevices.id);
+            //     _this.takePhotoRestOfDevices(device, localStorageDevices, previousDevices);
+            //   }
+            // }
+            timelapses[deviceId].settings.enumeratingTl.interval = timelapses[deviceId].settings.enumeratingTl.interval-1;
             if (timelapses[deviceId].settings.enumeratingTl.interval == timelapses[deviceId].settings.interval-3) {
               if (timelapses[deviceId].settings.activeHDRTl) {
                 console.log('Calling HDR ' + timelapses[deviceId].settings.enumeratingTl.interval);
@@ -632,6 +647,11 @@
               }
             }
           } else {
+            if (device.metaData.isAllCamera == true) {
+              var previousDevices = [];
+              console.log('TL taking pics with other cameras ' + localStorageDevices.id);
+              _this.takePhotoRestOfDevices(device, localStorageDevices, previousDevices);
+            }
             //interval is resetting, subtract a photo
             var photos = parseInt(timelapses[deviceId].settings.enumeratingTl.photos) + 1;
             // if (timelapses[deviceId].settings.activeHDRTl) {
@@ -671,6 +691,107 @@
         });
       },
 
+      takePhotoRestOfDevices: function takePhotoRestOfDevices(tempDevice, localStorageDevices, previousDevices) {
+        // for(var i = 0; i < vm.localStorageDevices.length; i++){
+        var deferred = $q.defer();
+        console.log('localStorageDevices.length : ' + localStorageDevices.length);
+        
+        // console.log("inside while loop *******");
+        console.log("device.metaData.cameraConnected value true ******* : " + tempDevice.metaData.cameraConnected);
+
+        if (tempDevice.metaData.cameraConnected == true || tempDevice.metaData.cameraConnected == 1 || tempDevice.metaData.cameraConnected == '1') {
+
+          $transmit.blinkLED(tempDevice);
+          
+          var photoMode;
+          if (tempDevice.btClassic.connected && tempDevice.btClassic.enabled) {
+            // photoMode = $config.communication.ACTION_PHOTO_FAST;
+            photoMode = $config.communication.ACTION_PHOTO_CAPTURE;
+            // console.log("capture: fast photo  *******");
+            // console.log("capture: ack photo *******");
+          } else {
+            // photoMode = $config.communication.ACTION_PHOTO_CAPTURE;
+            photoMode = $config.communication.ACTION_PHOTO_FAST;
+            // console.log("capture: ack photo *******");
+            console.log("capture: fast photo  *******");
+          }
+          // var captureData = [
+          //   0x00,
+          //   0x01,
+          //   $config.communication.SET_ACTION,
+          //   photoMode
+          // ];
+          // var buff = new Uint8Array(captureData);
+          // console.log("buff : " + JSON.stringify(buff));
+          // Take picture first camera - skipping
+          // BLE.write(
+          //   tempDevice.id,
+          //   $config.services.GATT_SERVICE_UUID_PULSE_COMMS_SERVICE,
+          //   $config.characteristics.GATT_CHAR_UUID_UART_TX,
+          //   buff.buffer,
+          //   function(response) {
+          //     // console.log("Photo capture write response ******* : " + response);
+          //     deferred.resolve(response);
+          //   },
+          //   function(error) {
+          //     console.log("Photo capture write error ******* :");
+          //     console.log(error);
+          //     deferred.reject(error);
+          //   }
+          // );
+          // Take picture second camera
+          previousDevices.push(tempDevice);
+          tempDevice = $device.getSelectedDevice(previousDevices); 
+          console.log('Taking photo second device: ' + tempDevice.id);
+           if (tempDevice != undefined && tempDevice != null) {
+            console.log('Call $transmit.capture for : ' + tempDevice.id);
+            $transmit.capture(tempDevice);
+          }
+          // take picture third camera
+          if (localStorageDevices.length > 2) {
+            previousDevices.push(tempDevice);
+            tempDevice = $device.getSelectedDevice(previousDevices); 
+            console.log('Taking photo third device: ' + tempDevice.id);
+            if (tempDevice != undefined && tempDevice != null) {
+              console.log('Call $transmit.capture for : ' + tempDevice.id);
+              $transmit.capture(tempDevice);
+            }
+          }
+          // take picture fourth camera
+          if (localStorageDevices.length > 3) {
+            previousDevices.push(tempDevice);
+            tempDevice = $device.getSelectedDevice(previousDevices); 
+            console.log('Taking photo third device: ' + tempDevice.id);
+            if (tempDevice != undefined && tempDevice != null) {
+              console.log('Call $transmit.capture for : ' + tempDevice.id);
+              $transmit.capture(tempDevice);
+            }
+          }
+          // take picture fifth camera
+          if (localStorageDevices.length > 4) {
+            previousDevices.push(tempDevice);
+            tempDevice = $device.getSelectedDevice(previousDevices); 
+            console.log('Taking photo third device: ' + tempDevice.id);
+            if (tempDevice != undefined && tempDevice != null) {
+              console.log('Call $transmit.capture for : ' + tempDevice.id);
+              $transmit.capture(tempDevice);
+            }
+          }
+          // take picture sixth camera
+          if (localStorageDevices.length > 5) {
+            previousDevices.push(tempDevice);
+            tempDevice = $device.getSelectedDevice(previousDevices); 
+            console.log('Taking photo third device: ' + tempDevice.id);
+            if (tempDevice != undefined && tempDevice != null) {
+              console.log('Call $transmit.capture for : ' + tempDevice.id);
+              $transmit.capture(tempDevice);
+            }
+          }
+        } else {
+          console.log("device.metaData.cameraConnected value false ******* : " + tempDevice.metaData.cameraConnected);
+        }
+      },
+  
       hdrTl: function hdrTl(device) {
         console.log("hdrTl device");
 

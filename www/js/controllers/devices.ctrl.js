@@ -132,7 +132,7 @@
       console.log('scanning for pulses from devices page');
       $device.scanAndConnectDevices(3000, false, true).then(function (result) {
         isScanning = false;
-        $cordovaNativeStorage.getItem('devices').then(function (result) {
+        $cordovaNativeStorage.getItem("devices").then(function (result) {
           localStorageDevices = sortByConnectedDevices(result);
           vm.localStorageDevices = _.filter(localStorageDevices);
         });

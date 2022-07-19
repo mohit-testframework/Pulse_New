@@ -4784,7 +4784,6 @@ Expected usage:
   margin-top: -20px !important;
 }
 
-/*.custom-radio-list {display: flex;justify-content: center;}*/
 .custom-radio-list ion-list {
   width: 50%;
 }

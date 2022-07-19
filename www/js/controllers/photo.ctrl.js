@@ -46,17 +46,9 @@
       console.log('In ionicPlatform.ready');
       $device.getDevicesFromStorage().then(function (result) {
         localStorageDevices = sortByConnectedDevices(result);
-        console.log('localStorageDevices  : ' + JSON.stringify(localStorageDevices));
+        // console.log('localStorageDevices  : ' + localStorageDevices.id);
         vm.localStorageDevices = _.filter(localStorageDevices);
-        console.log('vm.localStorageDevices  : ' + JSON.stringify(vm.localStorageDevices));
-
-        // for (var i = 0; i < (vm.localStorageDevices).length; i++) {
-        //   console.log('vm.localStorageDevices[i].id : ' + vm.localStorageDevices[i].id);
-        //   // if(vm.localStorageDevices[i].isMainDevice){
-        //   //   vm.isMainDevice = true;
-        //   // }
-        // }
-        
+        console.log('vm.localStorageDevices  : ' + vm.localStorageDevices.id);
       });
     });
 
@@ -64,13 +56,6 @@
     init();
 
     $rootScope.$on("thumbnailUploadPhotoPage", function(event, data) {
-      // console.log("data.thumbPath Photo Page : " + data.thumbPath);
-      // console.log('thumbnailUpload called successfully 7777');
-
-      // let element = document.getElementById("photo-ring-div");
-      // element.style.opacity = "1";
-      // element.style.filter  = 'alpha(opacity=100)';     
-      // document.getElementById('photo-ring-svg').setAttribute('pointer-events','auto');
 
       let photoThumb = window.Ionic.WebView.convertFileSrc(data.thumbPath);
       $timeout.cancel(animationTimer);
@@ -123,10 +108,8 @@
     };
 
     vm.changeExposureTime = function(time){
-
       // console.log('changeExposureTimeNew : ' + JSON.stringify(time));
       // let correctTime = time / 1.5;
-
     }
 
     vm.setNewDevice = function(device, $event){
@@ -180,28 +163,28 @@
     };
 
 
-  vm.isMoreThanOneDeviceConnected = function() {
+    vm.isMoreThanOneDeviceConnected = function() {
        // console.log('vm.localStorageDevices length : ' + vm.localStorageDevices.length);
       if (vm.localStorageDevices || vm.localStorageDevices != undefined || vm.localStorageDevices != null) {
-        if(vm.localStorageDevices.length != 0 && vm.localStorageDevices.length > 1){
+        if (vm.localStorageDevices.length != 0 && vm.localStorageDevices.length > 1) {
           let count = 0;
           for (var i = 0; i < vm.localStorageDevices.length; i++) {    
-          if(vm.localStorageDevices[i] && vm.localStorageDevices[i] != undefined){
-            if(vm.localStorageDevices[i].isConnected != undefined && vm.localStorageDevices[i].isConnected.isConnected){
-              // console.log('inside count : ' + i +  vm.localStorageDevices[i].isConnected.isConnected);
-              count = count + 1;
-            }            
-          }      
+            if (vm.localStorageDevices[i] && vm.localStorageDevices[i] != undefined) {
+              if (vm.localStorageDevices[i].isConnected != undefined && vm.localStorageDevices[i].isConnected.isConnected) {
+                // console.log('inside count : ' + i +  vm.localStorageDevices[i].isConnected.isConnected);
+                count = count + 1;
+              }            
+            }      
           }
-          if(count > 1){
+          if (count > 1) {
             // console.log('inside count if part');
             return true;
-          }else {
+           }else {
             // console.log('inside count else part');
             return false;
           }
 
-        }else {
+        } else {
           // console.log('inside length less than 1 else part');
           return false;
         }
@@ -210,15 +193,7 @@
         // console.log('inside localStorageDevices undefined else part');
         return false;
       }
-  };
-
-        // vm.currentValue = function(localStorageDevice){
-        //   if (localStorageDevice.isMainDevice == true) {
-        //     return true;
-        //   } else {
-        //     return false;
-        //   }
-        // };
+    };
 
     vm.getCameraModel = function(device) {
       var selectedDevice = _.find($device.devices, function (item) {
@@ -281,21 +256,20 @@
       }
     };
 
+    vm.setAllCameras = function() {
+      var device = $device.getSelectedDevice();
+      if (vm.isAllCamera) {
+        device.metaData.isAllCamera = true;
+        console.log('Setting all cameras to true');
+      } else {
+        device.metaData.isAllCamera = false;
+        console.log('Setting all cameras to false');
+      }
+    };
+
     vm.takePhoto = function() {
       console.log("inside takePhoto ******* : ");
 
-      // console.log("vm.isAllCamera ******* : " + vm.isAllCamera);
-
-      // $timeout.cancel(animationTimer);
-      // document.getElementsByClassName("photo-ring");
-      
-      // let element = document.getElementById("photo-ring-div");
-      //       element.style.opacity = "0.5";
-      //      element.style.filter  = 'alpha(opacity=50)';
-
-      // // let svgElement = document.getElementById("photo-ring-svg");
-      // // svgElement.style.pointer-events = 'none';
-      // document.getElementById('photo-ring-svg').setAttribute('pointer-events','none');
       var device;
 
       if (vm.isAllCamera == true) {
@@ -304,30 +278,13 @@
          device = currentSelectedDevice;
       }
 
-      // device = currentSelectedDevice;
-
-      // var device = $device.getSelectedDevice();
-      
-      // console.log('device 111 : ' +  JSON.stringify(currentSelectedDevice));
       var shutterWait = 0;
       var hasErrored = false;
       vm.changeopacity = "make-disabled";
       // console.log('device.metaData.cameraConnected : ' + device.metaData.cameraConnected + '$photo.settings.inProgress : ' + $photo.settings.inProgress)
-      if (
-        device &&
-        device.metaData.cameraConnected &&
-        ($photo.settings.inProgress == false)
-      ) {
-        
-        // if (device.btClassic.connected && device.btClassic.enabled) { 
-        //   $photo.settings.inProgress = true;
-        //   vm.fill = "#808080";
-        // }
-
-          $photo.settings.inProgress = true;
-          vm.fill = "#808080";
-
-
+      if (device && device.metaData.cameraConnected && ($photo.settings.inProgress == false)) {
+        $photo.settings.inProgress = true;
+        vm.fill = "#808080";
         vm.camSettings = $photo.getPhotoSettings();
         $cordovaVibration.vibrate(50);
         var settings = $camSettings.getActiveSettings();
@@ -402,15 +359,11 @@
 
         var tempDevice = device;
         
-        
-
         var previousDevices = [];
         if (vm.isAllCamera == true) {
-          // while (tempDevice != undefined && tempDevice != null) {
-            
-            takePhotoAllCamera(tempDevice, shutterWait, hasErrored, previousDevices);
 
-          // }
+          takePhotoAllCamera(tempDevice, shutterWait, hasErrored, previousDevices);
+          
         } else if (vm.isAllCamera == false) {
 
           $timeout(function() {
@@ -425,7 +378,7 @@
             // console.log('tempDevice 111 : ' +  JSON.stringify(tempDevice));
             
             // console.log("inside while loop *******");
-            console.log("shutterWait value ******* vm.isAllCamer false : " + shutterWait);
+            console.log("shutterWait value ******* vm.isAllCamera false : " + shutterWait);
             
             $photo.takePhoto(tempDevice, true, shutterWait).then(
               function(response) {
@@ -485,7 +438,7 @@
 
       } else {
 
-        if($photo.settings.inProgress == true){
+        if ($photo.settings.inProgress == true) {
           if(previousSelectedDevice != null && previousSelectedDevice != undefined){
             vm.errorText = "Please wait. Photo processing for " + vm.getCameraModel(previousSelectedDevice);
           } else {
@@ -510,7 +463,6 @@
         // $timeout.cancel(animationTimer);
       }
     };
-
 
     function takePhotoAllCamera(tempDevice, shutterWait, hasErrored, previousDevices) {
       // for(var i = 0; i < vm.localStorageDevices.length; i++){
@@ -544,6 +496,7 @@
           ];
           var buff = new Uint8Array(captureData);
           // console.log("buff : " + JSON.stringify(buff));
+          // Take picture first camera
           BLE.write(
             tempDevice.id,
             $config.services.GATT_SERVICE_UUID_PULSE_COMMS_SERVICE,
@@ -559,6 +512,7 @@
               deferred.reject(error);
             }
           );
+          // Take picture second camera
           previousDevices.push(tempDevice);
           tempDevice = $device.getSelectedDevice(previousDevices); 
           if (tempDevice != undefined && tempDevice != null) {
@@ -577,25 +531,86 @@
                 deferred.reject(error);
               }
             );
-            previousDevices.push(tempDevice);
-            tempDevice = $device.getSelectedDevice(previousDevices); 
-            if (tempDevice != undefined && tempDevice != null) {
-              BLE.write(
-                tempDevice.id,
-                $config.services.GATT_SERVICE_UUID_PULSE_COMMS_SERVICE,
-                $config.characteristics.GATT_CHAR_UUID_UART_TX,
-                buff.buffer,
-                function(response) {
-                  // console.log("Photo capture write response ******* : " + response);
-                  deferred.resolve(response);
-                },
-                function(error) {
-                  console.log("Photo capture write error ******* :");
-                  console.log(error);
-                  deferred.reject(error);
-                }
-              );
-            }
+          }
+          // take picture third camera
+          previousDevices.push(tempDevice);
+          tempDevice = $device.getSelectedDevice(previousDevices); 
+          if (tempDevice != undefined && tempDevice != null) {
+            BLE.write(
+              tempDevice.id,
+              $config.services.GATT_SERVICE_UUID_PULSE_COMMS_SERVICE,
+              $config.characteristics.GATT_CHAR_UUID_UART_TX,
+              buff.buffer,
+              function(response) {
+                // console.log("Photo capture write response ******* : " + response);
+                deferred.resolve(response);
+              },
+              function(error) {
+                console.log("Photo capture write error ******* :");
+                console.log(error);
+                deferred.reject(error);
+              }
+            );
+          }
+          // take picture fourth camera
+          previousDevices.push(tempDevice);
+          tempDevice = $device.getSelectedDevice(previousDevices); 
+          if (tempDevice != undefined && tempDevice != null) {
+            BLE.write(
+              tempDevice.id,
+              $config.services.GATT_SERVICE_UUID_PULSE_COMMS_SERVICE,
+              $config.characteristics.GATT_CHAR_UUID_UART_TX,
+              buff.buffer,
+              function(response) {
+                // console.log("Photo capture write response ******* : " + response);
+                deferred.resolve(response);
+              },
+              function(error) {
+                console.log("Photo capture write error ******* :");
+                console.log(error);
+                deferred.reject(error);
+              }
+            );
+          }
+          // take picture fifth camera
+          previousDevices.push(tempDevice);
+          tempDevice = $device.getSelectedDevice(previousDevices); 
+          if (tempDevice != undefined && tempDevice != null) {
+            BLE.write(
+              tempDevice.id,
+              $config.services.GATT_SERVICE_UUID_PULSE_COMMS_SERVICE,
+              $config.characteristics.GATT_CHAR_UUID_UART_TX,
+              buff.buffer,
+              function(response) {
+                // console.log("Photo capture write response ******* : " + response);
+                deferred.resolve(response);
+              },
+              function(error) {
+                console.log("Photo capture write error ******* :");
+                console.log(error);
+                deferred.reject(error);
+              }
+            );
+          }
+          // take picture sixth camera
+          previousDevices.push(tempDevice);
+          tempDevice = $device.getSelectedDevice(previousDevices); 
+          if (tempDevice != undefined && tempDevice != null) {
+            BLE.write(
+              tempDevice.id,
+              $config.services.GATT_SERVICE_UUID_PULSE_COMMS_SERVICE,
+              $config.characteristics.GATT_CHAR_UUID_UART_TX,
+              buff.buffer,
+              function(response) {
+                // console.log("Photo capture write response ******* : " + response);
+                deferred.resolve(response);
+              },
+              function(error) {
+                console.log("Photo capture write error ******* :");
+                console.log(error);
+                deferred.reject(error);
+              }
+            );
           }
         } else {
           console.log("device.metaData.cameraConnected value false ******* : " + tempDevice.metaData.cameraConnected);
@@ -636,8 +651,8 @@
       if (vm.selectedDevice != undefined) {
         vm.isMainDevice = vm.selectedDevice.id; 
         currentSelectedDevice =  vm.selectedDevice;
+        vm.selectedDevice.metaData.isAllCamera = vm.isAllCamera;
       }
-      
     }
 
     vm.isBtClassicConnected = function(checkForEnabled) {
@@ -746,7 +761,7 @@
         vm.isMainDevice = vm.selectedDevice.id;  
         currentSelectedDevice =  vm.selectedDevice;
       }      
-      if (device) {
+      if (device && !vm.isAllCamera) {
         return true;
       } else {
         return false;
@@ -764,28 +779,23 @@
 
     function sortByConnectedDevices(devices) {
       var localStorageDevices = _.sortBy(devices, [function (lDevice) {
-        console.log('lDevice.isMainDevice : ' + lDevice.isMainDevice);
+        // console.log('lDevice.isMainDevice : ' + lDevice.isMainDevice);
         var connectedPulses = $device.getConnectedDevices();
-
-      // for (var i = 0; i < connectedPulses.length; i++) {
-      //   console.log('connectedPulses.id : ' + connectedPulses[i].id);
-      //   console.log('connectedPulses.isConnected : ' + connectedPulses[i].isConnected);
-      //   // if(vm.localStorageDevices[i].isMainDevice){
-      //   //   vm.isMainDevice = true;
-      //   // }
-      // }
-
+        // console.log('Photo connectedPulses ' + JSON.stringify(connectedPulses));
         var isConnected = _.find(connectedPulses, function (connectedPulse) {
+          console.log('Photo Returning lDevice.id ' + JSON.stringify(lDevice.id));
           return lDevice.id == connectedPulse.id;
         });
         lDevice.isConnected = isConnected;
-        console.log('Returning lDevice.isConnected ' + JSON.stringify(lDevice.isConnected));
-        return lDevice.isConnected;
+        if (lDevice.isConnected) {
+          console.log('Photo Returning lDevice.isConnected ' + lDevice.isConnected.id);
+          return lDevice.isConnected;
+        }
       }]);
+      console.log('Photo Returning localStorageDevices ' + localStorageDevices.id);
       return localStorageDevices;
     }
-
-    // Enable drag-to-open menu
+    
     $scope.$on("$ionicView.enter", function() {
       $ionicSideMenuDelegate.canDragContent(true);
     });

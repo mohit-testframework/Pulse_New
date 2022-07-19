@@ -804,6 +804,7 @@
           statusMode: undefined,
           statusState: undefined,
           isPhotoBoothing: false,
+          isAllCamera: false,
           requestingMeta: false,
           newSession: true,
           camSettings: {
@@ -1133,9 +1134,7 @@
       },
 
       removeFromLocalStoage: function removeFromLocalStoage(device) {
-        $cordovaNativeStorage
-          .getItem("devices")
-          .then(function(localStorageDevices) {
+        $cordovaNativeStorage.getItem("devices").then(function(localStorageDevices) {
             delete localStorageDevices[device.id];
             $cordovaNativeStorage.setItem("devices", localStorageDevices);
           });
@@ -1455,7 +1454,7 @@ permission.requestPermission(permission.ACCESS_COARSE_LOCATION, function( status
         }, function (error) {
           console.log('inside geolocation_res error : ', error);       
         }, cordova.plugins.locationAccuracy.REQUEST_PRIORITY_HIGH_ACCURACY);
-      }else if(!requesting){
+      } else if (!requesting) {
 
           console.log('inside geolocation_res response');
 
@@ -1688,10 +1687,7 @@ permission.requestPermission(permission.ACCESS_COARSE_LOCATION, function( status
               pulse.isMainDevice = false;
               pulse.isSelected = true;
 
-              if (
-                !devices.sessionDevices ||
-                devices.sessionDevices.length <= 1
-              ) {
+              if (!devices.sessionDevices || devices.sessionDevices.length <= 1) {
                 pulse.isMainDevice = true;
               }
 
@@ -2189,6 +2185,7 @@ permission.requestPermission(permission.ACCESS_COARSE_LOCATION, function( status
         var deferred = $q.defer();
         $cordovaNativeStorage.getItem("devices").then(
           function(localStorageDevices) {
+            console.log('gotDeviceFromStorage ' + JSON.stringify(localStorageDevices));
             deferred.resolve(localStorageDevices);
             //deferred.resolve([{'nickname': localStorageDevices['4661918C-24F2-43CC-424C-1C494CA70B94'].nickname}]);
           },
@@ -2352,8 +2349,7 @@ permission.requestPermission(permission.ACCESS_COARSE_LOCATION, function( status
             : false;
 
         var deferred = $q.defer();
-        $cordovaNativeStorage
-          .getItem("devices")
+        $cordovaNativeStorage.getItem("devices")
           .then(function(localStorageObj) {
             // console.log(
             //   "localStorageObj devices : " + JSON.stringify(localStorageObj)
@@ -2361,8 +2357,7 @@ permission.requestPermission(permission.ACCESS_COARSE_LOCATION, function( status
             localStorageObj[device.id].nickname = nickname;
             //set the new nickname
             device.nickname = nickname;
-            $cordovaNativeStorage
-              .setItem("devices", localStorageObj)
+            $cordovaNativeStorage.setItem("devices", localStorageObj)
               .then(function(rr) {
                 var connectedPulses = _this9.getConnectedDevices();
                 _.forEach(connectedPulses, function(pulse) {
@@ -2373,8 +2368,7 @@ permission.requestPermission(permission.ACCESS_COARSE_LOCATION, function( status
                       return false;
                     } else {
                       device.nickname = nickname;
-                      $cordovaNativeStorage
-                        .getItem("devices")
+                      $cordovaNativeStorage.getItem("devices")
                         .then(function(localDevices) {
                           pulse.localStorageInfo = localDevices[device.id];
                           _this9.setDevice(pulse);
@@ -2395,9 +2389,7 @@ permission.requestPermission(permission.ACCESS_COARSE_LOCATION, function( status
 
       reSyncLocalStorage: function reSyncLocalStorage(device, nickname) {
         var deferred = $q.defer();
-        $cordovaNativeStorage
-          .getItem("devices")
-          .then(function(localStorageObj) {
+        $cordovaNativeStorage.getItem("devices").then(function(localStorageObj) {
             _.forEach(localStorageObj, function(localStorageDevice) {
               if (localStorageDevice.nickname == nickname) {
                 if (localStorageDevice.id != device.id) {
