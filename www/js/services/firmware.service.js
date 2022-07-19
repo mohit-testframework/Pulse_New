@@ -357,7 +357,7 @@
                 if (requesting) {
 
                 cordova.plugins.locationAccuracy.request(function (geolocation_res) {
-                  console.log('inside geolocation_res response : ', geolocation_res);
+                  // console.log('inside geolocation_res response : ', geolocation_res);
                 ble.startScan(
                   scanArray,
                   function(peripheral) {
@@ -554,7 +554,7 @@
               cordova.plugins.locationAccuracy.isRequesting(function(requesting) {
               if (requesting) {
                 cordova.plugins.locationAccuracy.request(function (geolocation_res) {
-                console.log('inside geolocation_res response : ', geolocation_res);
+                // console.log('inside geolocation_res response : ', geolocation_res);
                 ble.startScan(
                   scanArray,
                   function(peripheral) {
@@ -649,7 +649,7 @@
 
                 } else if (!requesting) {
 
-                  console.log('inside geolocation_res response : ', geolocation_res);
+                  // console.log('inside geolocation_res response : ', geolocation_res);
                   ble.startScan(
                   scanArray,
                   function(peripheral) {
