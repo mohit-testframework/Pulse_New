@@ -1,7 +1,9 @@
 (function () {
     var Canvas,
+        Image,
         getCanvasImageData = function (imageBuffer, callback) {
-            var canvasImage = new Canvas.Image();
+            var canvasImage = new Image();
+            canvasImage.crossOrigin = 'Anonymous';
 
             canvasImage.onerror = function () {
                 callback(new Error('error while reading from input stream'));
@@ -9,10 +11,7 @@
             canvasImage.onload = function () {
                 var context = new Canvas(canvasImage.width, canvasImage.height).getContext('2d');
                 context.drawImage(canvasImage, 0, 0);
-
-                //hackery to be able to deal with our thumbnails from the cameras, we splice off the borders
-                callback(null, context.getImageData(0, 9, canvasImage.width, canvasImage.height -17).data);
-                //callback(null, context.getImageData(0, 0, canvasImage.width, canvasImage.height).data);
+                callback(null, context.getImageData(0, 0, canvasImage.width, canvasImage.height).data);
             };
             canvasImage.src = imageBuffer;
         },
@@ -111,7 +110,9 @@
 
     if (typeof exports === 'object') {
         // Assume nodejs
-        Canvas = require('canvas');
+        var canvas = require('canvas');
+        Canvas = canvas.Canvas;
+        Image = canvas.Image;
         module.exports = histogram;
     } else {
         // Polyfill canvas constructor
@@ -122,7 +123,7 @@
 
             return canvas;
         };
-        Canvas.Image = Image;
+        Image = window.Image;
 
         if (typeof define === 'function') {
             // AMD module

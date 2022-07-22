@@ -1,9 +1,9 @@
 "use strict";
 
-(function() {
+(function () {
   "use strict";
 
-  pulse.services.factory("btClassic", function(
+  pulse.services.factory("btClassic", function (
     $q,
     $rootScope,
     $transmit,
@@ -27,14 +27,13 @@
       read: function read(address) {
         console.log("inside BTClassic read" + address);
         var deferred = $q.defer();
-
         BluetoothClassic.read(address,
-          function(buffer) {
+          function (buffer) {
             var view = new Uint8Array(buffer);
             console.log("successfully read data over BT Classic");
             deferred.resolve(view);
           },
-          function(error) {
+          function (error) {
             console.log("failed to read data over BT Classic");
             deferred.reject(error);
           }
@@ -52,13 +51,13 @@
 
         BluetoothClassic.disconnect(
           address,
-          function() {
+          function () {
             console.log(
               "successfully disconnected device from BluetoothClassic"
             );
             deferred.resolve();
           },
-          function() {
+          function () {
             deferred.reject();
             console.log("failed to disconnect device from BluetoothClassic");
           }
@@ -80,12 +79,12 @@
 
         BluetoothClassic.write(
           data,
-          function(response) {
+          function (response) {
             //success cb
             console.log("BluetoothClassic wrote successfully");
             deferred.resolve(response);
           },
-          function(error) {
+          function (error) {
             //failure, write failed
             console.log("BluetoothClassic failed to write");
             deferred.reject(error);
@@ -142,7 +141,7 @@
                 });
               }
             },
-            onYesButtonClick: function onYesButtonClick() {},
+            onYesButtonClick: function onYesButtonClick() { },
             assignedClass: "firmware-diff",
             animation: "fade-in-scale",
             twoButton: true,
@@ -160,13 +159,13 @@
         console.log("starting BTC connect");
         BluetoothClassic.connect(
           address,
-          function(result) {
+          function (result) {
             console.log("BluetoothClassic connection succeeded");
             deferred.resolve(result);
             $rootScope.$broadcast("firmwareModalTime", {});
             $rootScope.$broadcast("btConnect", { success: true });
           },
-          function(error) {
+          function (error) {
             console.log("BluetoothClassic connection failed");
             settings.connected = false;
             $transmit.resetBtc(device);
@@ -185,7 +184,7 @@
                 checkboxAction: function checkboxAction() {
                   $cordovaNativeStorage
                     .getItem("shouldWarnPicker")
-                    .then(function(status) {
+                    .then(function (status) {
                       $cordovaNativeStorage.setItem(
                         "shouldWarnPicker",
                         !status
@@ -195,12 +194,12 @@
                 assignedClass: "btClassicAlert",
                 onButtonClick: function onButtonClick() {
                   BluetoothClassic.showPicker(
-                    function(result) {
+                    function (result) {
                       deferred.resolve(result);
                       $rootScope.$broadcast("firmwareModalTime", {});
                       $rootScope.$broadcast("btConnect", { success: true });
                     },
-                    function(error) {
+                    function (error) {
                       $rootScope.$broadcast("firmwareModalTime", {});
                       if (
                         error == $config.classicPickerResponses.MANUALLY_CLOSED
@@ -220,16 +219,16 @@
 
               $cordovaNativeStorage
                 .getItem("shouldWarnPicker")
-                .then(function(shouldWarnPicker) {
+                .then(function (shouldWarnPicker) {
                   if (shouldWarnPicker) {
                     $rootScope.$broadcast("openModal", modalData);
                   } else {
-                    $timeout(function() {
+                    $timeout(function () {
                       BluetoothClassic.showPicker(
-                        function(result) {
+                        function (result) {
                           _this.connect(address, device, deferred);
                         },
-                        function(error) {
+                        function (error) {
                           $rootScope.$broadcast("firmwareModalTime", {});
                           if (
                             error ==
@@ -278,10 +277,10 @@
         }
         BluetoothClassic.isConnected(
           address,
-          function(response) {
+          function (response) {
             deferred.resolve(response);
           },
-          function(error) {
+          function (error) {
             deferred.reject(error);
           }
         );
@@ -304,11 +303,11 @@
         var deferred = $q.defer();
 
         BluetoothClassic.closeSession(
-          function(result) {
+          function (result) {
             console.log("BTC session closed");
             deferred.resolve(result);
           },
-          function(error) {
+          function (error) {
             console.log("Problem closing BTC session!");
             deferred.reject(error);
           }

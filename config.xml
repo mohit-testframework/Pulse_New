@@ -5,6 +5,7 @@
     <author email="hi@ionicframework.com" href="http://ionicframework.com/">Ionic Framework Team</author>
     <content src="index.html" />
     <access origin="*" />
+    <allow-navigation href="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />
@@ -25,11 +26,15 @@
     <preference name="FadeSplashScreen" value="true" />
     <preference name="deployment-target" value="12.0" />
     <preference name="AndroidPersistentFileLocation" value="Compatibility" />
+    <preference name="android-minSdkVersion" value="22" />
+    <preference name="android-targetSdkVersion" value="30" />
+    <preference name="AndroidInsecureFileModeEnabled" value="true" />
     <platform name="android">
         <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application" xmlns:android="http://schemas.android.com/apk/res/android">
             <application android:networkSecurityConfig="@xml/network_security_config" />
             <application android:allowBackup="false" />
         </edit-config>
+        <hook src="plugins/cordova-plugin-ble-central/stripDuplicatePermissions.js" type="after_prepare" />
         <resource-file src="resources/android/xml/network_security_config.xml" target="app/src/main/res/xml/network_security_config.xml" />
         <allow-intent href="market:*" />
         <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
@@ -108,7 +113,6 @@
     <plugin name="cordova-plugin-statusbar" spec="2.4.2" />
     <plugin name="cordova-plugin-device" spec="2.0.2" />
     <plugin name="cordova-plugin-splashscreen" spec="5.0.2" />
-    <plugin name="cordova-plugin-ionic-webview" spec="^4.0.0" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.0.5" />
     <plugin name="pulse-bluetooth-policy" spec="https://github.com/blakeparkinson/pulse-bluetooth-policy" />
     <plugin name="pulse-external-accessory" spec="https://github.com/blakeparkinson/pulse-external-accessory.git" />

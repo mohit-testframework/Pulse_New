@@ -888,8 +888,10 @@ ion-content.white-bg {
 }
 
 .photo .helper-hist {
-  margin-top: -10px;
+  margin-top: -22px;
   margin-bottom: 10px;
+  color: #000;
+  font-weight: bold;
 }
 
 .photo .img-container {
